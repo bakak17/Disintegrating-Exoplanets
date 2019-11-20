@@ -12,7 +12,7 @@ dt = 0.03187669
 binsize = 0.0005
 bin_edges = np.arange(0.98, 1.05, binsize)
 bin_mid = np.arange(0.98025, 1.05025, binsize)
-slice_phase = np.arange((t+0.5*dt), (-t-0.5*dt), dt)
+slice_phase = np.arange((t+0.5*dt), (-t+0.5*dt), dt)
 nBin = bin_mid.shape[0]
 nSlices = 32
 bigTable = np.zeros([nSlices, nBin])
@@ -28,7 +28,7 @@ while i < nSlices:
     bigTable[i,:] = counts
     i += 1
     t += dt
-
+#Git test
 
 ##New Compiling Method?
 HDUList = fits.PrimaryHDU(bigTable)
