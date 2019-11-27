@@ -39,7 +39,7 @@ sliceHDU = fits.ImageHDU(np.arange(32)+1)
 sliceHDU.name = 'Slice Numbers'
 phaseHDU = fits.ImageHDU(slice_phase)
 phaseHDU.name = 'TIME'
-HDUList = fits.HDUList([primHDU,bin_midHDU,sliceHDU])
+HDUList = fits.HDUList([primHDU,bin_midHDU,sliceHDU,phaseHDU])
 HDUList.writeto('total_hist.fits',overwrite=True)
 
 
