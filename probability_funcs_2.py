@@ -14,7 +14,7 @@ def raleigh(inX,sigma=1,mu=0):
     yout[pts] = 0.
     return yout
 
-def joint_func(x,sigma_r=1,sigma_g=1,mu=0):
+def joint_func(x,sigma_r=1,mu=0):
     sigma_g = 0.000717105679
     sigma_2 = np.sqrt(sigma_r**2 + sigma_g**2)
     
