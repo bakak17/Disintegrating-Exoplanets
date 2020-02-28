@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.special import erfc
 import pdb
+import warnings
+sigma_g = 1
 
 def gaussian(x,sigma=1,mu=0):
     return np.exp(-0.5 * ((x - mu)/sigma)**2)/(np.sqrt(2. * np.pi) * sigma)
@@ -14,7 +16,8 @@ def raleigh(inX,sigma=1,mu=0):
     yout[pts] = 0.
     return yout
 
-def joint_func(x,sigma_r=1,sigma_g=1,mu=0):
+def joint_func(x,sigma_r=1,mu=0):
+    global sigma_g
     sigma_2 = np.sqrt(sigma_r**2 + sigma_g**2)
     
     term1 = gaussian((x - mu),sigma=sigma_g) / (1. + sigma_r**2/sigma_g**2)

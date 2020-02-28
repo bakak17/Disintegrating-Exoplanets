@@ -1,3 +1,4 @@
+import pdb
 from astropy.table import Table
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,11 +15,24 @@ def fitting(planet):
     nSlices = HDUList[2].data
     slices = len(nSlices[0:])
     Time = HDUList[3].data
+    out_of_transit = np.zeros_like(bigTable[0])
+    time_index = np.arange(slices)
     if planet == 'Kep1520':
-        out_of_transit = (bigTable[0] + bigTable[1] + bigTable[2] + bigTable[3] + bigTable[4] + bigTable[5] + bigTable[6] + bigTable[7] + bigTable[23] + bigTable[24] + bigTable[25] + bigTable[26] + bigTable[27] + bigTable[28] + bigTable[29] + bigTable[30] + bigTable[31])/17
+        j = 0.0
+        for i in time_index:
+            if (Time[i] < -0.128) or (Time[i] > 0.2):
+                out_of_transit = out_of_transit + bigTable[i]
+                j += 1.0
+        out_of_transit = out_of_transit/j
         p0 = [0.000717105679, 1]
     elif planet == 'K2d22':
-        out_of_transit = ((bigTable[4] + bigTable[5] + bigTable[6] + bigTable[7] + bigTable[8] + bigTable[9] + bigTable[10] + bigTable[11] + bigTable[12] + bigTable[13] + bigTable[14] + bigTable[15] + bigTable[16] + bigTable[17] + bigTable[18])/15)
+        j = 0.0
+        for i in time_index:
+            if (Time[i] < -0.2) or (Time[i] > 0.22):
+                out_of_transit = out_of_transit + bigTable[i]
+                j += 1.0
+        out_of_transit = out_of_transit/j
+        #out_of_transit = ((bigTable[4] + bigTable[5] + bigTable[6] + bigTable[7] + bigTable[8] + bigTable[9] + bigTable[10] + bigTable[11] + bigTable[12] + bigTable[13] + bigTable[14] + bigTable[15] + bigTable[16] + bigTable[17] + bigTable[18])/15)
         p0 = [0.000572959250, 1]
     plt.plot(bin_mid, out_of_transit, label = 'Out of Transit')
     
@@ -32,7 +46,7 @@ def fitting(planet):
     plt.xlabel('Flux')
     plt.ylabel('Frequency')
     plt.legend()
-    plt.savefig("{}plots/out_of_transit_avg.pdf".format(planet))
+    plt.savefig("{}plots2/out_of_transit_avg.pdf".format(planet))
     plt.close()
     ListOfMaxima = []
     ListOfSigmaR = []
@@ -45,10 +59,10 @@ def fitting(planet):
         ListOfSigmaR.append(popt2[0])
         print(popt2)
         plt.plot(xdata, probability_funcs.joint_func(xdata, *popt2), 'g-', label = 'Slice {} Model'.format(i))
-        #plt.plot(xdata, probability_funcs.joint_func(xdata, 0.0000418, 1.0), 'o-', label = 'Slice {} Guess'.format(i))
+        plt.plot(xdata, probability_funcs.raleigh(xdata, sigma = popt2[0], mu = popt2[1]), label = 'Slice {} Raleigh'.format(i))
         plt.legend()
-        plt.savefig("{}plots/slice_fit_{:03d}.pdf".format(planet, i))
+        plt.savefig("{}plots2/slice_fit_{:03d}.pdf".format(planet, i))
         plt.close()
     plt.plot(Time, ListOfMaxima)
-    plt.savefig("{}plots/maximum_time_series.pdf".format(planet))
+    plt.savefig("{}plots2/maximum_time_series.pdf".format(planet))
     plt.close('all')

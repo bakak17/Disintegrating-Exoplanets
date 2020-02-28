@@ -7,19 +7,17 @@ from astropy.io import fits
 plt.close('all')
 
 ##VARIABLES. LOTS OF VARIABLES##
-def compiler(planet):
+def compiler(planet, binsize=0.0005):
     t = -0.5
     if planet == 'Kep1520':
         dt = 0.03187669
-        nSlices = 32
-        dat = Table.read("{}folded_3.fits".format(planet))
+        dat = Table.read("{}folded.fits".format(planet))
     elif planet == 'K2d22':
         dt = 0.05466947
-        nSlices = 19
         dat = Table.read("{}folded.fits".format(planet))
-    binsize = 0.0005
+    nSlices = (int(1 / dt) + 1)
     bin_edges = np.arange(0.98, 1.05, binsize)
-    bin_mid = np.arange(0.98025, 1.05025, binsize)
+    bin_mid = np.arange((0.98 + (binsize*0.5)), (1.05), binsize)
     slice_phase = np.arange((t+0.5*dt), (-t+0.5*dt), dt)
     nBin = bin_mid.shape[0]
     bigTable = np.zeros([nSlices, nBin])
