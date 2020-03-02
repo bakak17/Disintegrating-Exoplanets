@@ -32,7 +32,6 @@ def fitting(planet):
                 out_of_transit = out_of_transit + bigTable[i]
                 j += 1.0
         out_of_transit = out_of_transit/j
-        #out_of_transit = ((bigTable[4] + bigTable[5] + bigTable[6] + bigTable[7] + bigTable[8] + bigTable[9] + bigTable[10] + bigTable[11] + bigTable[12] + bigTable[13] + bigTable[14] + bigTable[15] + bigTable[16] + bigTable[17] + bigTable[18])/15)
         p0 = [0.000572959250, 1]
     plt.plot(bin_mid, out_of_transit, label = 'Out of Transit')
     
@@ -50,19 +49,23 @@ def fitting(planet):
     plt.close()
     ListOfMaxima = []
     ListOfSigmaR = []
+    MaximaError = []
+    SigmaRError = []
     for i in range(0, slices):
         in_transit = bigTable[i]
         plt.plot(bin_mid, in_transit, label = 'Slice {}'.format(i))
         ydata = in_transit
-        popt2, pcov2 = curve_fit(probability_funcs.joint_func, xdata, ydata, p0=[0.0000418, 1.0])
+        popt2, pcov2 = curve_fit(probability_funcs.joint_func, xdata, ydata, p0=[0.0000418, 1.0], bounds=([0.00004, 0.98], [0.07, 1.05]))
         ListOfMaxima.append(popt2[1])
         ListOfSigmaR.append(popt2[0])
-        print(popt2)
+        MaximaError.append((pcov2[1,1])**0.5)
+        SigmaRError.append((pcov2[0,0])**0.5)
+        print(popt2, i)
         plt.plot(xdata, probability_funcs.joint_func(xdata, *popt2), 'g-', label = 'Slice {} Model'.format(i))
         plt.plot(xdata, probability_funcs.raleigh(xdata, sigma = popt2[0], mu = popt2[1]), label = 'Slice {} Raleigh'.format(i))
         plt.legend()
         plt.savefig("{}plots2/slice_fit_{:03d}.pdf".format(planet, i))
         plt.close()
-    plt.plot(Time, ListOfMaxima)
+    plt.errorbar(Time, ListOfMaxima, MaximaError)
     plt.savefig("{}plots2/maximum_time_series.pdf".format(planet))
     plt.close('all')
