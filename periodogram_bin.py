@@ -35,6 +35,7 @@ def recoverplanet(filename='Kep1520', periodstart=0.64, periodend=0.66, t0 = 245
     folded.to_fits('{}folded.fits'.format(filename), overwrite=True)
     folded_binned.plot()
     plt.show()
+    plt.savefig("{}plots2/folded_binned.pdf".format(filename))
     folded_binned.to_fits('{}foldedbinned.fits'.format(filename), overwrite=True)
 
 def k2d22():

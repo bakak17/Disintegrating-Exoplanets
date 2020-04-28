@@ -67,5 +67,7 @@ def fitting(planet):
         plt.savefig("{}plots2/slice_fit_{:03d}.pdf".format(planet, i))
         plt.close()
     plt.errorbar(Time, ListOfMaxima, MaximaError)
+    #plt.set_xlabel('Transit Phase')
+    #plt.set_ylabel('Flux')
     plt.savefig("{}plots2/maximum_time_series.pdf".format(planet))
     plt.close('all')
