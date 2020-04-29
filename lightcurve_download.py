@@ -10,7 +10,7 @@ def lightcurve_22():
     K222.to_fits('K2d22curve.fits')
 
 
-def lightcurve_1520(lcKep1520):
+def lightcurve_1520():
     import lightkurve
     target = "Kepler-1520"
     lcKep1520 = search_lightcurvefile(target, quarter=1).download().PDCSAP_FLUX.normalize().flatten(window_length=101)

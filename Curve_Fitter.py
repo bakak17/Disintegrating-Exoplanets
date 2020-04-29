@@ -45,7 +45,7 @@ def fitting(planet):
     plt.xlabel('Flux')
     plt.ylabel('Frequency')
     plt.legend()
-    plt.savefig("{}plots2/out_of_transit_avg.pdf".format(planet))
+    plt.savefig("{}plots/out_of_transit_avg.pdf".format(planet))
     plt.close()
     ListOfMaxima = []
     ListOfSigmaR = []
@@ -64,13 +64,16 @@ def fitting(planet):
         plt.plot(xdata, probability_funcs.joint_func(xdata, *popt2), 'g-', label = 'Slice {} Model'.format(i))
         plt.plot(xdata, probability_funcs.raleigh(xdata, sigma = popt2[0], mu = popt2[1]), label = 'Slice {} Raleigh'.format(i))
         plt.legend()
-        plt.savefig("{}plots2/slice_fit_{:03d}.pdf".format(planet, i))
+        plt.savefig("{}plots/slice_fit_{:03d}.pdf".format(planet, i))
         plt.close()
     plt.errorbar(Time, ListOfMaxima, MaximaError, xerr=None, fmt='r', ecolor='b', elinewidth = 1)
-    plt.title('Maximum Time Series')
+    if planet == 'Kep1520':
+        plt.title('Maximum Time Series for Kepler 1520b')
+    elif planet == 'K2d22':
+        plt.title('Maximum Time Series for K2-22b')
     plt.xlabel('Transit Phase')
     plt.ylabel('Flux')
     plt.tight_layout()
     plt.show()
-    plt.savefig("{}plots2/maximum_time_series.pdf".format(planet))
+    plt.savefig("{}plots/maximum_time_series.pdf".format(planet))
     plt.close('all')
