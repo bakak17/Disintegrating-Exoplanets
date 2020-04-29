@@ -5,7 +5,6 @@ import numpy as np
 from astropy.io import fits
 from scipy.optimize import curve_fit
 import probability_funcs
-import probability_funcs_2
 plt.close('all')
 
 def fitting(planet):
