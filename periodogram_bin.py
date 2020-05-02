@@ -2,6 +2,7 @@
 import lightkurve as lk
 import matplotlib.pyplot as plt
 import numpy as np
+plt.close('all')
 def recoverplanet(filename='Kep1520', periodstart=0.64, periodend=0.66, t0 = 2454968.982):
     """tpf = lk.search_targetpixelfile("Kepler-1520", quarter = q).download()
     tpf.plot(frame=100, scale='log', show_colorbar=True)
@@ -35,7 +36,7 @@ def recoverplanet(filename='Kep1520', periodstart=0.64, periodend=0.66, t0 = 245
     folded.to_fits('{}folded.fits'.format(filename), overwrite=True)
     folded_binned.plot()
     plt.show()
-    plt.savefig("{}plots2/folded_binned.pdf".format(filename))
+    plt.savefig("{}plots/folded_binned.pdf".format(filename))
     folded_binned.to_fits('{}foldedbinned.fits'.format(filename), overwrite=True)
 
 def k2d22():
