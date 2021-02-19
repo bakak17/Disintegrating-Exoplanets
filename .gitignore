@@ -1,0 +1,8 @@
+*.fits
+*.npz
+*.json
+Traces/
+__pycache__/
+FluxFiles/
+Kep1520plots/
+K2d22plots/
