@@ -62,7 +62,7 @@ def single_slice(planet, slice_num, load = 0):
             trace1 = pm.load_trace(directory = direct)
             return trace1
         
-def load(planet, slice_num):
+def load(planet, slice_num): #no longer needed
     flnm = flnm = 'FluxFiles/{plnt}_slice{{nmbr}}.fits'.format(plnt = planet)
     filename= flnm.format(nmbr = slice_num)
     HDUList = fits.open(filename)
