@@ -1,6 +1,17 @@
-# coding: utf-8
 from lightkurve import search_lightcurvefile
 import matplotlib.pyplot as plt
+import lightkurve as lk
+import numpy as np
+from astropy.table import Table
+from astropy.io import fits
+import pdb
+from scipy.optimize import curve_fit
+import probability_funcs
+import pymc3 as pm
+import arviz as az
+
+'''LIGHTCURVE_DOWNLOAD.PY'''
+
 def lightcurve_22():
     import lightkurve
     target = "K2-22"
@@ -17,3 +28,6 @@ def lightcurve_1520():
         lcKep1520 = lcKep1520.append(search_lightcurvefile(target, quarter=q).download().PDCSAP_FLUX.normalize().flatten(window_length=101))
     lcKep1520.plot()
     lcKep1520.to_fits('Kep1520curve.fits')
+
+lightcurve_22()
+lightcurve_1520()
