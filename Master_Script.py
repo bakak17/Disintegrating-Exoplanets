@@ -20,7 +20,6 @@ def lightcurve_22():
     K222.plot()
     K222.to_fits('K2d22curve.fits')
 
-
 def lightcurve_1520():
     import lightkurve
     target = "Kepler-1520"
@@ -30,8 +29,10 @@ def lightcurve_1520():
     lcKep1520.plot()
     lcKep1520.to_fits('Kep1520curve.fits')
 
-lightcurve_22()
-lightcurve_1520()
+import lightcurve_download
+
+lightcurve_download.lightcurve_22()
+lightcurve_download.lightcurve_1520()
 
 plt.close('all')
 
@@ -77,8 +78,10 @@ def recoverplanet(filename='Kep1520', periodstart=0.64, periodend=0.66, t0 = 245
 def k2d22():
     recoverplanet('K2d22', .38, .39, 2456811.1208)
 
-recoverplanet()
-k2d22()
+import periodogram_bin
+
+periodogram_bin.recoverplanet()
+periodogram_bin.k2d22()
 
 plt.close('all')
 
@@ -129,8 +132,10 @@ def compiler(planet, binsize=0.0005, scale=1.0, shift=0):
     HDUList.writeto("{}total_hist.fits".format(planet),overwrite=True)
     plt.close('all')
 
-compiler(planet = 'Kep1520')
-compiler(planet = 'K2d22')
+import histogram_compiler
+
+histogram_compiler.compiler(planet = 'Kep1520')
+histogram_compiler.compiler(planet = 'K2d22')
 
 
 '''FLUXSAVER.PY'''
@@ -220,11 +225,13 @@ def out_flux(planet, binsize=0.0005, scale=1.0, shift=0):
     filename = 'FluxFiles/{}_sliceFullOut.fits'.format(planet)
     HDUList.writeto(filename, overwrite = True)
 
-slice_flux(planet = 'Kep1520')
-slice_flux(planet = 'K2d22')
+import FluxSaver
 
-out_flux(planet = 'Kep1520')
-out_flux(planet = 'K2d22')
+FluxSaver.slice_flux(planet = 'Kep1520')
+FluxSaver.slice_flux(planet = 'K2d22')
+
+FluxSaver.out_flux(planet = 'Kep1520')
+FluxSaver.out_flux(planet = 'K2d22')
 
 plt.close('all')
 
@@ -309,8 +316,10 @@ def fitting(planet):
     plt.savefig("{}plots/Max_time_series.pdf".format(planet))
     plt.close('all')
 
-fitting(planet = 'Kep1520')
-fitting(planet = 'K2d22')
+import curve_fitter
+
+curve_fitter.fitting(planet = 'Kep1520')
+curve_fitter.fitting(planet = 'K2d22')
 
 
 '''TRACE_MAKE.PY'''
@@ -387,10 +396,12 @@ def load(planet, slice_num): #no longer needed
         trace1 = pm.load_trace(directory = direct)
         return trace1
 
-rapido(planet = 'Kep1520')
-rapido(planet = 'K2d22')
+import trace_make
 
-single_slice(planet = 'Kep1520', slice_num = 'FullOut')
-single_slice(planet = 'K2d22', slice_num = 'FullOut')
+trace_make.rapido(planet = 'Kep1520')
+trace_make.rapido(planet = 'K2d22')
+
+trace_make.single_slice(planet = 'Kep1520', slice_num = 'FullOut')
+trace_make.single_slice(planet = 'K2d22', slice_num = 'FullOut')
 
 plt.close('all')

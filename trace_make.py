@@ -77,3 +77,27 @@ def load(planet, slice_num): #no longer needed
         direct = direc.format(nmbr = slice_num)
         trace1 = pm.load_trace(directory = direct)
         return trace1
+
+def hist_maker(planet):
+    if planet == 'Kep1520':
+        j = 33
+    if planet == 'K2d22':
+        j = 20
+    i = 1
+    while i < j:
+        trace1 = single_slice(planet = planet, slice_num = i, load = 1)
+        plt.hist(trace1['sigma'])
+        plt.savefig('{}plots/0trace_results/slice{:02d}_sigma.pdf'.format(planet, i))
+        plt.close()
+        plt.hist(trace1['mu'])
+        plt.savefig('{}plots/0trace_results/slice{:02d}_mu.pdf'.format(planet, i))
+        plt.close()
+        i += 1
+    trace1 = single_slice(planet = planet, slice_num = 'FullOut', load = 1)
+    plt.hist(trace1['sigma'])
+    plt.savefig('{}plots/0trace_results/slice{}_sigma.pdf'.format(planet, 'FullOut'))
+    plt.close()
+    plt.hist(trace1['mu'])
+    plt.savefig('{}plots/0trace_results/slice{}_mu.pdf'.format(planet, 'FullOut'))
+    plt.close()
+
