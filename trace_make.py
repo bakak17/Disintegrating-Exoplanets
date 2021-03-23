@@ -49,7 +49,7 @@ def single_slice(planet, slice_num, load = 0):
             mu = pm.Normal('mu', 1, 0.00065)
         slice_mdl = pm.Normal('model', sigma = sigma, mu = mu, observed = flux)
         
-        direc = '/Users/keithbaka/Documents/0Research_Schlawin/Traces/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
+        direc = '/Users/keithbaka/Documents/0Research_Schlawin/Traces/Gauss/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
         direct = direc.format(nmbr = slice_num)
         if load == 0:
             trace1 = pm.sample(1000, random_seed = 123)
@@ -73,7 +73,7 @@ def load(planet, slice_num): #no longer needed
         mu = pm.Normal('mu', 1, 0.00065)
         slice_mdl = pm.Normal('model', sigma = sigma, mu = mu, observed = flux)
         
-        direc = '/Users/keithbaka/Documents/0Research_Schlawin/Traces/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
+        direc = '/Users/keithbaka/Documents/0Research_Schlawin/Traces/Gauss/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
         direct = direc.format(nmbr = slice_num)
         trace1 = pm.load_trace(directory = direct)
         return trace1
@@ -87,17 +87,17 @@ def hist_maker(planet):
     while i < j:
         trace1 = single_slice(planet = planet, slice_num = i, load = 1)
         plt.hist(trace1['sigma'])
-        plt.savefig('{}plots/0trace_results/slice{:02d}_sigma.pdf'.format(planet, i))
+        plt.savefig('{}plots/norm_trace/slice{:02d}_sigma.pdf'.format(planet, i))
         plt.close()
         plt.hist(trace1['mu'])
-        plt.savefig('{}plots/0trace_results/slice{:02d}_mu.pdf'.format(planet, i))
+        plt.savefig('{}plots/norm_trace/slice{:02d}_mu.pdf'.format(planet, i))
         plt.close()
         i += 1
     trace1 = single_slice(planet = planet, slice_num = 'FullOut', load = 1)
     plt.hist(trace1['sigma'])
-    plt.savefig('{}plots/0trace_results/slice{}_sigma.pdf'.format(planet, 'FullOut'))
+    plt.savefig('{}plots/norm_trace/slice{}_sigma.pdf'.format(planet, 'FullOut'))
     plt.close()
     plt.hist(trace1['mu'])
-    plt.savefig('{}plots/0trace_results/slice{}_mu.pdf'.format(planet, 'FullOut'))
+    plt.savefig('{}plots/norm_trace/slice{}_mu.pdf'.format(planet, 'FullOut'))
     plt.close()
 
