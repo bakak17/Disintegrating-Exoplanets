@@ -11,7 +11,7 @@ def recoverplanet(filename='Kep1520', periodstart=0.64, periodend=0.66, t0 = 245
     plt.show()
     flat, trend = lc.flatten(window_length=301, return_trend=True)"""
     lcf = lk.lightcurvefile.KeplerLightCurveFile("{}curve.fits".format(filename))
-    flat = lcf.get_lightcurve('FLUX')
+    flat = lcf.lightcurve('FLUX')
     #ax = lc.errorbar(label="Kepler-1520")
     #trend.plot(ax=ax, color='red', lw=2, label='Trend')
     plt.show()
