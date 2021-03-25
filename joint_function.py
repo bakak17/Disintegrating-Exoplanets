@@ -5,21 +5,30 @@ import arviz as az
 import pymc3 as pm
 import probability_funcs
 import pdb
+import os
 plt.close('all')
 
-def joint_function(x,sigma_r=1,sigma_g=1,mu_r=0.0):
-    """
-    Combined Raleigh and Gaussian
-    Parameters
-    ----------
-    sigma_r: float
-        Sigma of Raleigh distribution
-    mu_r: float
-        The maximum for the raleigh distribution
-    """
-    #probability_funcs.sigma_g = sigma_g
-    p = probability_funcs.joint_func(x,sigma_r=sigma_r, mu=mu_r, sigma_g = sigma_g)
-    return np.log(p)
+class joint_function(pm.Continuous):
+    def __init__(self,sigma_r=1,sigma_g=1,mu_r=0.0,*args,**kwargs):
+        """
+        Combined Raleigh and Gaussian
+        Parameters
+        ----------
+        sigma_r: float
+            Sigma of Raleigh distribution
+        mu_r: float
+            The maximum for the raleigh distribution
+        """
+        
+        super().__init__(*args, **kwargs)
+        self.sigma_r = sigma_r
+        self.mu_r = mu_r
+        self.sigma_g = sigma_g
+    
+    def logp(self,x):
+        p = probability_funcs.joint_func(x,sigma_r=self.sigma_r,
+                                        mu=self.mu_r, sigma_g = self.sigma_g)
+        return np.log(p)
 
 
 def joint_trace(planet, load = 0):
@@ -51,11 +60,9 @@ def joint_trace(planet, load = 0):
             #flux_maximum = pm.Normal('flux_maximum', mu=1.0,sigma=0.01)
             mu_r = pm.Normal('mu_r', mu=1.0,sigma=0.01, testval = 1)
             sigma_r = pm.Normal('sigma_r', mu=0.01,sigma=0.01)
-
-            y_obs = pm.DensityDist('joint_function', joint_function, observed={'x':flux,
-                                                                               'sigma_r':sigma_r,
-                                                                               'sigma_g':sigma_gauss,
-                                                                               'mu_r':mu_r})
+            
+            y_obs = joint_function('joint_function',sigma_r=sigma_r,sigma_g=sigma_gauss,mu_r=mu_r,observed=flux)
+            
             #pdb.set_trace()
 
             direc = '/Users/keithbaka/Documents/0Research_Schlawin/Traces/Joint/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
