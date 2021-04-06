@@ -9,6 +9,7 @@ from scipy.optimize import curve_fit
 import probability_funcs
 import pymc3 as pm
 import arviz as az
+import os
 plt.close('all')
 
 def script():
@@ -20,8 +21,15 @@ def script():
     lightcurve_download.lightcurve_22()
     lightcurve_download.lightcurve_1520()
     
-    
     '''PERIODOGRAM_BIN.PY'''
+    try:
+        os.mkdir('Kep1520plots')
+    except OSError as error:
+        print(error)
+    try:
+        os.mkdir('K2d22plots')
+    except OSError as error:
+        print(error)
     
     import periodogram_bin
     
@@ -31,14 +39,17 @@ def script():
     
     '''HISTOGRAM_COMPILER.PY'''
     
-    import histogram_compiler
+    import Histogram_Compiler
     
-    histogram_compiler.compiler(planet = 'Kep1520')
-    histogram_compiler.compiler(planet = 'K2d22')
+    Histogram_Compiler.compiler(planet = 'Kep1520')
+    Histogram_Compiler.compiler(planet = 'K2d22')
     
     
     '''FLUXSAVER.PY'''
-    os.mkdir('FluxFiles')
+    try:
+        os.mkdir('FluxFiles')
+    except OSError as error:
+        print(error)
     
     import FluxSaver
     
@@ -49,19 +60,23 @@ def script():
     FluxSaver.out_flux(planet = 'K2d22')
     
     
-    '''CURVE_FITTER.PY'''
-    os.mkdir('Kep1520plots')
-    os.mkdir('K2d22plots')
+    '''CURVE_FITTER.PY
     
-    import curve_fitter
-    
-    curve_fitter.fitting(planet = 'Kep1520')
-    curve_fitter.fitting(planet = 'K2d22')
+    import Curve_Fitter
+
+    Curve_Fitter.fitting(planet = 'Kep1520')
+    Curve_Fitter.fitting(planet = 'K2d22')'''
     
     
     '''TRACE_MAKE.PY'''
-    os.mkdir('Kep1520plots/norm_trace')
-    os.mkdir('K2d22plots/norm_trace')
+    try:
+        os.mkdir('Kep1520plots/norm_trace')
+    except OSError as error:
+        print(error)
+    try:
+        os.mkdir('K2d22plots/norm_trace')
+    except OSError as error:
+        print(error)
     
     import trace_make
     

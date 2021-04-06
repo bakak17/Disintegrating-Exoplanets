@@ -12,15 +12,18 @@ def compiler(planet, binsize=0.0005, scale=1.0, shift=0):
     if planet == 'Kep1520':
         dt = 0.03187669/(float(scale))
         dat = Table.read("{}folded.fits".format(planet))
+        phase = dat['TIME'] / 0.653553800
     elif planet == 'K2d22':
         dt = 0.05466947/(float(scale))
         dat = Table.read("{}folded.fits".format(planet))
+        phase = dat['TIME'] / 0.381078
     nSlices = (int(1 / dt) + 1)
     bin_edges = np.arange(0.98, 1.05, binsize)
     bin_mid = np.arange((0.98 + (binsize*0.5)), (1.05), binsize)
     nBin = bin_mid.shape[0]
     slide = shift/nBin
     slice_phase = np.arange(((t+0.5*dt)-slide), ((-t+0.5*dt) - slide), dt)
+    print(slice_phase)
     bigTable = np.zeros([nSlices, nBin])
     i = 0
     ##########
@@ -28,7 +31,8 @@ def compiler(planet, binsize=0.0005, scale=1.0, shift=0):
     ##Potential automated loop for compiling
     
     while i < nSlices:
-        pts = (dat['TIME'] > t) & (dat['TIME'] < (t + dt))
+        pts = (phase > t) & (phase < (t + dt))
+        ##DIVIDE TIME BY PERIOD TO ALIGN WITH PHASE
         flux = dat['FLUX'][pts]
         counts, junk1, junk2 = plt.hist(flux, bins = bin_edges)
         bigTable[i,:] = counts

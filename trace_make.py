@@ -27,7 +27,7 @@ def rapido(planet):
             slice_mdl = pm.Normal('model', sigma = sigma, mu = mu, observed = flux)
             trace1 = pm.sample(1000, random_seed = 123)
         
-            direc = '/Users/keithbaka/Documents/0Research_Schlawin/Traces/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
+            direc = '/Users/keithbaka/Documents/0Research_Schlawin/Traces/Gauss/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
             direct = direc.format(nmbr = i)
             try:
                 pm.save_trace(trace1, directory = direct, overwrite = True)
@@ -44,7 +44,7 @@ def single_slice(planet, slice_num, load = 0):
     with pm.Model() as slice_model:
         sigma = pm.Normal('sigma', 0.00065, 0.0026)
         if slice_num == 'FullOut':
-            mu = pm.Normal('mu', 1, 0.0065)
+            mu = pm.Normal('mu', 1, 0.065)
         else:
             mu = pm.Normal('mu', 1, 0.00065)
         slice_mdl = pm.Normal('model', sigma = sigma, mu = mu, observed = flux)
@@ -61,7 +61,8 @@ def single_slice(planet, slice_num, load = 0):
         elif load == 1:
             trace1 = pm.load_trace(directory = direct)
             return trace1
-        
+
+'''        
 def load(planet, slice_num): #no longer needed
     flnm = flnm = 'FluxFiles/{plnt}_slice{{nmbr}}.fits'.format(plnt = planet)
     filename= flnm.format(nmbr = slice_num)
@@ -77,6 +78,7 @@ def load(planet, slice_num): #no longer needed
         direct = direc.format(nmbr = slice_num)
         trace1 = pm.load_trace(directory = direct)
         return trace1
+'''
 
 def hist_maker(planet):
     if planet == 'Kep1520':

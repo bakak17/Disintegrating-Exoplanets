@@ -2,6 +2,7 @@
 import lightkurve as lk
 import matplotlib.pyplot as plt
 import numpy as np
+import astropy.units as u
 plt.close('all')
 def recoverplanet(filename='Kep1520', periodstart=0.64, periodend=0.66, t0 = 2454968.982):
     """tpf = lk.search_targetpixelfile("Kepler-1520", quarter = q).download()
@@ -11,32 +12,41 @@ def recoverplanet(filename='Kep1520', periodstart=0.64, periodend=0.66, t0 = 245
     plt.show()
     flat, trend = lc.flatten(window_length=301, return_trend=True)"""
     lcf = lk.lightcurvefile.KeplerLightCurveFile("{}curve.fits".format(filename))
+    #lcf.plot()
     lcf_clean = lcf.remove_outliers(sigma_lower=1000, sigma_upper=5)
-    flat = lcf_clean.flux
+    flat = lcf_clean
+    flat.plot()
+    plt.savefig("{}plots/clean.pdf".format(filename), overwrite = True)
     #ax = lc.errorbar(label="Kepler-1520")
     #trend.plot(ax=ax, color='red', lw=2, label='Trend')
-    #plt.show()
     #flat = flat.remove_outliers(sigma_lower=1000, sigma_upper=5)
     #flat.errorbar()
-    #plt.show()
     periodogram = flat.to_periodogram(method="bls", period=np.arange(periodstart, periodend, 0.00001))
     periodogram.plot()
-    plt.show()
+    plt.savefig("{}plots/periodogram.pdf".format(filename), overwrite = True)
+    #plt.show()
+    #plt.close('all')
     if filename == 'K2d22':
         best_fit_period = 0.381078
     else:
-        best_fit_period = periodogram.period_at_max_power
+        #best_fit_period = periodogram.period_at_max_power
+        best_fit_period = 0.6535538
     print('Best fit period: {:.9f}'.format(best_fit_period))
-    folded = flat.fold(period=best_fit_period, t0=(t0 - 2454833.0))#.errorbar()
-    folded_binned = folded.bin(100, 'mean')
+    folded = flat.fold(period=best_fit_period, epoch_time = (t0 - 2454833.0))#.errorbar()
+    folded.plot()
+    plt.savefig("{}plots/folded.pdf".format(filename), overwrite = True)
+    #t0=(t0 - 2454833.0)
+    folded_binned = folded.bin(time_bin_size = (10. * u.min))
     #foldedlc = folded.to_lightcurve()
     #folded_binned = foldedlc.bin(100, 'mean')
+    #plt.close('all')
     #folded.errorbar().plot()
-    plt.show()
     folded.to_fits('{}folded.fits'.format(filename), overwrite=True)
+    #plt.close('all')
     folded_binned.plot()
-    plt.show()
-    plt.savefig("{}plots/folded_binned.pdf".format(filename))
+    #plt.show()
+    plt.savefig("{}plots/folded_binned.pdf".format(filename), overwrite = True)
+    plt.close('all')
     folded_binned.to_fits('{}foldedbinned.fits'.format(filename), overwrite=True)
 
 def k2d22():

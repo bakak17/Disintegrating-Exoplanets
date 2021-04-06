@@ -14,20 +14,23 @@ def fitting(planet):
     nSlices = HDUList[2].data
     slices = len(nSlices[0:])
     Time = HDUList[3].data
+    #JUST THOUGHT TO ADJUST PHASE HERE (10:40am 4/6)
     out_of_transit = np.zeros_like(bigTable[0])
     time_index = np.arange(slices)
     if planet == 'Kep1520':
+        Phase = Time / 0.653553800
         j = 0.0
         for i in time_index:
-            if (Time[i] < -0.128) or (Time[i] > 0.2):
+            if (Phase[i] < -0.128) or (Phase[i] > 0.2):
                 out_of_transit = out_of_transit + bigTable[i]
                 j += 1.0
         out_of_transit = out_of_transit/j
         p0 = [0.000717105679, 1]
     elif planet == 'K2d22':
+        Phase = Time / 0.381078
         j = 0.0
         for i in time_index:
-            if (Time[i] < -0.2) or (Time[i] > 0.22):
+            if (Phase[i] < -0.2) or (Phase[i] > 0.22):
                 out_of_transit = out_of_transit + bigTable[i]
                 j += 1.0
         out_of_transit = out_of_transit/j
