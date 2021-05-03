@@ -18,7 +18,7 @@ def fitting(planet):
     out_of_transit = np.zeros_like(bigTable[0])
     time_index = np.arange(slices)
     if planet == 'Kep1520':
-        Phase = Time / 0.653553800
+        Phase = Time #/ 0.653553800
         j = 0.0
         for i in time_index:
             if (Phase[i] < -0.128) or (Phase[i] > 0.2):
