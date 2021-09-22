@@ -56,8 +56,10 @@ def single_slice(planet, slice_num):
 def chunk_violin(planet):
     if planet == 'Kep1520':
         j = 33
+        plan = 'Kepler 1520b'
     if planet == 'K2d22':
-        j = 20 
+        j = 20
+        plan = 'K2-22b'
     i = 1
     HDUList = fits.open("{}total_hist.fits".format(planet))
     Time = HDUList[3].data
@@ -68,7 +70,7 @@ def chunk_violin(planet):
         i += 1
     plt.violinplot(dat, Time, widths = 1/(j), showmeans = True, showextrema = False,
                    showmedians = True, bw_method='silverman')
-    plt.title('Distribution of Trace Means for the Joint Function')
+    plt.title('Posterior Distributions of ' + r'$\mu_R$' + ' for {}'.format(plan))
     plt.xlabel('Time (Phase)')
     plt.ylabel('Normalized Flux')
     plt.savefig("{}plots/violin_plots/trace_violin.pdf".format(planet), overwrite = True)
@@ -85,7 +87,7 @@ def chunk_violin(planet):
         #pdb.set_trace()
     plt.violinplot(dat, Time, widths = 1/(j), showmeans = True, showextrema = False,
                    showmedians = True, bw_method='silverman')
-    plt.title('Distribution of Fluxes for Observed Transits')
+    plt.title('Distribution of Fluxes for Observed Transits for {}'.format(plan))
     plt.xlabel('Time (Phase)')
     plt.ylabel('Normalized Flux')
     #plt.show()

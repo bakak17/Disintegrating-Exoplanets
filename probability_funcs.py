@@ -33,6 +33,11 @@ def joint_func(x,sigma_r=1,mu=0, sigma_g = 1):
     term2 = mult1 * mult2 * mult3
     #pdb.set_trace()
     return term1 + term2
+
+def joint_func_eval(x, sigma_r=1, mu = 0):
+    global sigma_g
+    #try copying and pasting and switching mult3 to get it to run faster
+    return joint_func(x, sigma_r, mu, sigma_g).eval()
     
 def plot_joint_func(sigma_r=1,sigma_g=0.3,mu=0):
     x = np.linspace(-8,3,1024)

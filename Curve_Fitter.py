@@ -27,7 +27,7 @@ def fitting(planet):
         out_of_transit = out_of_transit/j
         p0 = [0.000717105679, 1]
     elif planet == 'K2d22':
-        Phase = Time / 0.381078
+        Phase = Time #/ 0.381078
         j = 0.0
         for i in time_index:
             if (Phase[i] < -0.2) or (Phase[i] > 0.22):
@@ -57,13 +57,14 @@ def fitting(planet):
         in_transit = bigTable[i]
         plt.plot(bin_mid, in_transit, label = 'Slice {}'.format(i))
         ydata = in_transit
-        popt2, pcov2 = curve_fit(probability_funcs.joint_func, xdata, ydata, p0=[0.0000418, 1.0], bounds=([0.00004, 0.98], [0.07, 1.05]))
+        #pdb.set_trace()
+        popt2, pcov2 = curve_fit(probability_funcs.joint_func_eval, xdata, ydata, p0=[0.0000418, 1.0], bounds=([0.00004, 0.98], [0.07, 1.05]))
         ListOfMaxima.append(popt2[1])
         ListOfSigmaR.append(popt2[0])
         MaximaError.append((pcov2[1,1])**0.5)
         SigmaRError.append((pcov2[0,0])**0.5)
         print(popt2, i)
-        plt.plot(xdata, probability_funcs.joint_func(xdata, *popt2), 'g-', linewidth=0.5, label = 'Slice {} Model'.format(i))
+        plt.plot(xdata, probability_funcs.joint_func_eval(xdata, *popt2), 'g-', linewidth=0.5, label = 'Slice {} Model'.format(i))
         plt.plot(xdata, probability_funcs.raleigh(xdata, sigma = popt2[0], mu = popt2[1]), linewidth=0.5, label = 'Slice {} Raleigh'.format(i))
         #plt.xlim(0.9997, 1.000)
         #plt.ylim(0, 50)
