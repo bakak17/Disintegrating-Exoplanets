@@ -1,7 +1,7 @@
 aesara-theano-fallback==0.0.4
 appnope==0.1.2
-arviz @ file:///tmp/build/80754af9/arviz_1614019183254/work
-astropy @ file:///opt/concourse/worker/volumes/live/37fbd2b2-7bed-485f-777f-7939107df919/volume/astropy_1606922928626/work
+arviz==0.11.2
+astropy==4.2
 astroquery==0.4.1
 autograd==1.3
 backcall==0.2.0
@@ -10,7 +10,7 @@ bokeh==2.3.0
 bs4==0.0.1
 cachetools==4.2.1
 certifi==2020.12.5
-cftime @ file:///opt/concourse/worker/volumes/live/afd54feb-e97d-427c-4b87-d838855e9a7a/volume/cftime_1613248235583/work
+cftime==1.4.1
 chardet==4.0.0
 cycler==0.10.0
 decorator==4.4.2
@@ -20,7 +20,7 @@ fastprogress==1.0.0
 fbpca==1.0
 filelock==3.0.12
 future==0.18.2
-h5py @ file:///opt/concourse/worker/volumes/live/ca975206-a8f5-4947-64c0-5af2e33e601d/volume/h5py_1593454180658/work
+h5py==2.10.0
 homebrew==0.2.2
 html5lib==1.1
 idna==2.10
@@ -31,51 +31,54 @@ jedi==0.18.0
 Jinja2==2.11.3
 joblib==1.0.1
 keyring==23.0.0
-kiwisolver @ file:///opt/concourse/worker/volumes/live/0b2f3e77-eaa3-4995-7dd0-c994762fcbde/volume/kiwisolver_1612282417472/work
+kiwisolver==1.3.1
 lightkurve==2.0.7
 MarkupSafe==1.1.1
-matplotlib @ file:///opt/concourse/worker/volumes/live/41e8cd50-031f-4dda-5787-dd3c4f4e0f08/volume/matplotlib-suite_1613407855571/work
+matplotlib==3.3.4
 memoization==0.3.2
 mkl-fft==1.3.0
 mkl-random==1.1.1
 mkl-service==2.3.0
-netCDF4 @ file:///opt/concourse/worker/volumes/live/d5ff8873-19b6-4e7a-5804-4bb11fffddaf/volume/netcdf4_1613684167485/work
-numpy @ file:///opt/concourse/worker/volumes/live/5572694e-967a-4c0c-52cf-b53d43e72de9/volume/numpy_and_numpy_base_1603491881791/work
+netCDF4==1.5.6
+numpy==1.19.2
 oktopus==0.1.2
 olefile==0.46
-packaging @ file:///tmp/build/80754af9/packaging_1611952188834/work
+packaging==20.9
 pandas==1.2.3
 parso==0.8.1
 patsy==0.5.1
 pexpect==4.8.0
 pickleshare==0.7.5
-Pillow @ file:///opt/concourse/worker/volumes/live/b6dec6d8-7e9d-4d46-615c-691883c22eae/volume/pillow_1615057391629/work
+Pillow==8.1.2
+pip==21.0.1
 prompt-toolkit==3.0.18
 ptyprocess==0.7.0
-pyerfa @ file:///opt/concourse/worker/volumes/live/f8414d66-f274-490a-63c6-6da935bf3422/volume/pyerfa_1613849506350/work
+pyerfa==1.7.2
 Pygments==2.8.1
 pymc3==3.11.2
 pymc3-ext==0.1.0
-pyparsing @ file:///home/linux1/recipes/ci/pyparsing_1610983426697/work
-python-dateutil @ file:///home/ktietz/src/ci/python-dateutil_1611928101742/work
-pytz @ file:///tmp/build/80754af9/pytz_1612215392582/work
+pyparsing==2.4.7
+python-dateutil==2.8.1
+pytz==2021.1
 PyYAML==5.4.1
 requests==2.25.1
 scikit-learn==0.24.1
-scipy @ file:///opt/concourse/worker/volumes/live/6dffae74-cfc9-42e9-6005-4cc55f8e27a1/volume/scipy_1614022792494/work
+scipy==1.6.1
 semver==2.13.0
-six @ file:///opt/concourse/worker/volumes/live/5b31cb27-1e37-4ca5-6e9f-86246eb206d2/volume/six_1605205320872/work
+setuptools==52.0.0.post20210125
+six==1.15.0
 soupsieve==2.2
 Theano==1.0.4
 Theano-PyMC==1.1.2
 threadpoolctl==2.1.0
-tornado @ file:///opt/concourse/worker/volumes/live/05341796-4198-4ded-4a9a-332fde3cdfd1/volume/tornado_1606942323372/work
-tqdm @ file:///tmp/build/80754af9/tqdm_1615925068909/work
+tornado==6.1
+tqdm==4.59.0
 traitlets==5.0.5
 typing-extensions==3.7.4.3
 uncertainties==3.1.5
 urllib3==1.26.4
 wcwidth==0.2.5
 webencodings==0.5.1
-xarray @ file:///tmp/build/80754af9/xarray_1614625053385/work
+wheel==0.36.2
+xarray==0.17.0
 zipp==3.4.1
