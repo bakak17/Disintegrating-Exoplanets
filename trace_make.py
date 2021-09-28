@@ -2,7 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from astropy.io import fits
 import pymc3 as pm
+import pymc3_ext as pmx
 import arviz as az
+import os
 plt.close('all')
 
 def rapido(planet):
@@ -25,6 +27,7 @@ def rapido(planet):
             sigma = pm.Normal('sigma', 0.00065, 0.0026)
             mu = pm.Normal('mu', 1, 0.00065)
             slice_mdl = pm.Normal('model', sigma = sigma, mu = mu, observed = flux)
+            #map_params = pmx.optimize()
             trace1 = pm.sample(1000, random_seed = 123)
         
             direc = '/Users/keithbaka/Documents/0Research_Schlawin/Traces/Gauss/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
@@ -34,6 +37,7 @@ def rapido(planet):
             except IOError:
                 os.mkdir(direct)
             pm.save_trace(trace1, directory = direct, overwrite = True)
+            #return map_params
 
 def single_slice(planet, slice_num, load = 0):
     flnm = 'FluxFiles/{plnt}_slice{{nmbr}}.fits'.format(plnt = planet)
@@ -51,6 +55,7 @@ def single_slice(planet, slice_num, load = 0):
         
         direc = '/Users/keithbaka/Documents/0Research_Schlawin/Traces/Gauss/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
         direct = direc.format(nmbr = slice_num)
+        #map_params = pmx.optimize()
         if load == 0:
             trace1 = pm.sample(1000, random_seed = 123)
             try:
@@ -59,6 +64,7 @@ def single_slice(planet, slice_num, load = 0):
                 os.mkdir(direct)
                 pm.save_trace(trace1, directory = direct, overwrite = True)
         elif load == 1:
+            #return map_params
             trace1 = pm.load_trace(directory = direct)
             return trace1
 
