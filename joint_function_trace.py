@@ -5,6 +5,7 @@ import pymc3 as pm
 import probability_funcs
 import pdb
 import os
+import pymc3_ext as pmx
 plt.close('all')
 
 class joint_function(pm.Continuous):
@@ -77,6 +78,9 @@ def joint_trace(planet, load = 0):
             elif load == 1:
                 trace1 = pm.load_trace(directory = direct)
                 return trace1
+            elif load == 2:
+                map_params = pmx.optimize()
+                return map_params
 
 def single_slice(planet, slice_num, load = 0):
     flnm = 'FluxFiles/{plnt}_slice{{nmbr}}.fits'.format(plnt = planet)
@@ -112,6 +116,9 @@ def single_slice(planet, slice_num, load = 0):
         elif load == 1:
             trace1 = pm.load_trace(directory = direct)
             return trace1
+        elif load == 2:
+            map_params = pmx.optimize()
+            return map_params
 
 def hist_maker(planet):
     if planet == 'Kep1520':

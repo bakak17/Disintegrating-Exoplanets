@@ -7,29 +7,9 @@ import arviz as az
 import os
 import probability_funcs
 from sklearn import preprocessing
+import joint_function_trace
 plt.close('all')
 
-class joint_function(pm.Continuous):
-    def __init__(self,sigma_r=1,sigma_g=1,mu_r=0.0,*args,**kwargs):
-        """
-        Combined Raleigh and Gaussian
-        Parameters
-        ----------
-        sigma_r: float
-            Sigma of Raleigh distribution
-        mu_r: float
-            The maximum for the raleigh distribution
-        """
-        
-        super().__init__(*args, **kwargs)
-        self.sigma_r = sigma_r
-        self.mu_r = mu_r
-        self.sigma_g = sigma_g
-    
-    def logp(self,x):
-        p = probability_funcs.joint_func(x,sigma_r=self.sigma_r,
-                                        mu=self.mu_r, sigma_g = self.sigma_g)
-        return np.log(p)
 
 def rapido(planet):
     t = -0.5
@@ -122,55 +102,46 @@ def hist_maker(planet):
 
 def optimize_pull(planet1):
     plt.close('all')
-    m1 = 2
     if planet1 == 'Kep1520':
         j = 33
         x = np.linspace(0.985, 1.005, 1000)
     if planet1 == 'K2d22':
         j = 19
         x = np.linspace(0.985, 1.01, 1000)
-    while m1 > (-1):
-        i = 1
-        while i < j:
-            if m1 == 2:
-                map_params = single_slice(planet = planet1, slice_num = i, m = m1, load = 2)
-                mu_g = map_params["mu_g"]
-                sigma_g = map_params["sigma_g"]
-                y = probability_funcs.gaussian(x, sigma = sigma_g, mu = mu_g)
-            elif m1 == 1:
-                map_params = single_slice(planet = planet1, slice_num = i, m = m1, load = 2)
-                mu_r = map_params["mu_r"]
-                sigma_r = map_params["sigma_r"]
-                y = probability_funcs.raleigh(x, sigma = sigma_r, mu = mu_r)
-            elif m1 == 0:
-                y = joint_function(x, sigma_r = sigma_r, mu = mu_r, sigma_g = sigma_g)
-                print(y)
-            ymin, ymax = min(y), max(y)
-            for k, val in enumerate(y):
-                y[k] = (val-ymin) / (ymax-ymin)
-            plt.plot((y/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'r-')
-            plt.plot(-(y/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'r-')
-            plt.fill_betweenx(x,(y/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)),-(y/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), alpha = 0.5, color = 'red')
+    i = 1
+    while i < j:
+            map_params = joint_function_trace.single_slice(planet = planet1, slice_num = i, load = 2)
+            mu_r = map_params["mu_r"]
+            sigma_r = map_params["sigma_r"]
+            sigma_g = map_params["sigma_gauss"]
+            mu_g = map_params["mu_gauss"]
+            y_j_tens = probability_funcs.joint_func(x, sigma_r = sigma_r, mu = mu_r, sigma_g = sigma_g)
+            y_r = probability_funcs.raleigh(x, sigma = sigma_r, mu = mu_r)
+            y_g = probability_funcs.gaussian(x, sigma = sigma_g, mu = mu_g)
+            y_j = y_j_tens.eval()
+            #y_r = y_r_tens.eval()
+            yjmin, yjmax = min(y_j), max(y_j)
+            for k, val in enumerate(y_j):
+                y_j[k] = (val-yjmin) / (yjmax-yjmin)
+            yrmin, yrmax = min(y_r), max(y_r)
+            for k, val in enumerate(y_r):
+                y_r[k] = (val-yrmin) / (yrmax-yrmin)
+            ygmin, ygmax = min(y_g), max(y_g)
+            for k, val in enumerate(y_g):
+                y_g[k] = (val-ygmin) / (ygmax-ygmin)
+            plt.plot((y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'r-')
+            plt.plot(-(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'r-')
+            plt.fill_betweenx(x,(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)),-(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), alpha = 0.5, color = 'red')
+            plt.plot((y_r/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'b-')
+            plt.plot(-(y_r/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'b-')
+            plt.plot((y_g/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'g-')
+            plt.plot(-(y_g/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'g-')
             i +=1
-        if m1 == 2:
-            plt.xlabel('Phase, Counts')
-            plt.ylabel('Flux')
-            plt.title('Maximum A Priori Solution, Flux vs Orbital Phase')
-            plt.savefig('{}plots/{}_gauss_trace_optimize.pdf'.format(planet1, planet1), overwrite = True)
-            plt.close('all')
-        elif m1 == 1:
-            plt.xlabel('Phase, Counts')
-            plt.ylabel('Flux')
-            plt.title('Maximum A Priori Solution, Flux vs Orbital Phase')
-            plt.savefig('{}plots/{}_raleigh_trace_optimize.pdf'.format(planet1, planet1), overwrite = True)
-            plt.close('all')
-        elif m1 == 0:
-            plt.xlabel('Phase, Counts')
-            plt.ylabel('Flux')
-            plt.title('Maximum A Priori Solution, Flux vs Orbital Phase')
-            plt.savefig('{}plots/{}_joint_trace_optimize.pdf'.format(planet1, planet1), overwrite = True)
-            plt.close('all')
-        m1-=1
+    plt.xlabel('Phase, Counts')
+    plt.ylabel('Flux')
+    plt.title('Maximum A Priori Solution, Flux vs Orbital Phase')
+    plt.savefig('{}plots/{}_joint_trace_optimize.pdf'.format(planet1, planet1), overwrite = True)
+    plt.close('all')
 
 def optimize_pull1(planet):
     plt.close('all')
