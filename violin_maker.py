@@ -118,6 +118,55 @@ def slice_violin(planet):
         plt.close('all')
         i += 1
 
-
-
+def median_pull(planet):
+    plt.close('all')
+    if planet == 'Kep1520':
+        j = 33
+        x = np.linspace(0.985, 1.005, 1000)
+    if planet == 'K2d22':
+        j = 19
+        x = np.linspace(0.985, 1.01, 1000)
+    i = 1
+    trace2 = single_slice(planet = planet, slice_num = 'FullOut')
+    dat_mug = []
+    dat_sigg = []
+    dat_mug.append(trace2['mu_gauss'])
+    dat_sigg.append(trace2['sigma_gauss'])
+    mu_g = np.median(dat_mug)
+    sigma_g = np.median(dat_sigg)
+    while i < j:
+        dat_mur = []
+        dat_sigr = []
+        trace1 = single_slice(planet = planet, slice_num = i)
+        dat_mur.append(trace1['mu_r'])
+        dat_sigr.append(trace1['sigma_r'])
+        mu_r = np.median(dat_mur)
+        sigma_r = np.median(dat_sigr)
+        y_j_tens = probability_funcs.joint_func(x, sigma_r = sigma_r, mu = mu_r, sigma_g = sigma_g)
+        y_r = probability_funcs.raleigh(x, sigma = sigma_r, mu = mu_r)
+        y_g = probability_funcs.gaussian(x, sigma = sigma_g, mu = mu_g)
+        y_j = y_j_tens.eval()
+        yjmin, yjmax = min(y_j), max(y_j)
+        for k, val in enumerate(y_j):
+                y_j[k] = (val-yjmin) / (yjmax-yjmin)
+        yrmin, yrmax = min(y_r), max(y_r)
+        for k, val in enumerate(y_r):
+                y_r[k] = (val-yrmin) / (yrmax-yrmin)
+        ygmin, ygmax = min(y_g), max(y_g)
+        for k, val in enumerate(y_g):
+                y_g[k] = (val-ygmin) / (ygmax-ygmin)
+        #plt.plot((y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'r-')
+        #plt.plot(-(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'r-')
+        plt.plot((y_r/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'b-')
+        plt.plot(-(y_r/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'b-')
+        plt.plot((y_g/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'g-')
+        plt.plot(-(y_g/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'g-')
+        plt.fill_betweenx(x,(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)),-(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), alpha = 0.4, color = 'red')
+        i +=1
+    plt.xlabel('Phase, Counts')
+    plt.ylabel('Flux')
+    plt.title('Maximum A Priori Solution, Flux vs Orbital Phase')
+    plt.savefig('{}plots/{}_joint_trace_optimize.pdf'.format(planet, planet), overwrite = True)
+    plt.close('all')
+        
     

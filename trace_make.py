@@ -43,26 +43,22 @@ def rapido(planet):
             pm.save_trace(trace1, directory = direct, overwrite = True)
             #return map_params
 
-def single_slice(planet, slice_num, load = 0, m = 2):
+def single_slice(planet, slice_num, load = 0):
     flnm = 'FluxFiles/{plnt}_slice{{nmbr}}.fits'.format(plnt = planet)
     filename= flnm.format(nmbr = slice_num)
     HDUList = fits.open(filename)
     flux = HDUList[1].data
     error = HDUList[2].data
     with pm.Model() as slice_model:
-        if m == 2:
-            sigma_g = pm.Normal('sigma_g', 0.00065, 0.0026)
-            if slice_num == 'FullOut':
-                mu_g = pm.Normal('mu_g', 1, 0.065)
-            else:
-                mu_g = pm.Normal('mu_g', 1, 0.00065)
-            slice_mdl = pm.Normal('model', sigma = sigma_g, mu = mu_g, observed = flux)
-            direc = '/Users/keithbaka/Documents/0Research_Schlawin/Traces/Gauss/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
-            direct = direc.format(nmbr = slice_num)
-        elif m == 1:
-            mu_r = pm.Normal('mu_r', mu=1.0,sigma=0.01, testval = 1)
-            sigma_r = pm.Normal('sigma_r', mu=0.01,sigma=0.01)
-            slice_mdl = pm.Normal('model', sigma = sigma_r, mu = mu_r, observed = flux)
+
+        sigma_g = pm.Normal('sigma_g', 0.00065, 0.0026)
+        if slice_num == 'FullOut':
+            mu_g = pm.Normal('mu_g', 1, 0.065)
+        else:
+            mu_g = pm.Normal('mu_g', 1, 0.00065)
+        slice_mdl = pm.Normal('model', sigma = sigma_g, mu = mu_g, observed = flux)
+        direc = '/Users/keithbaka/Documents/0Research_Schlawin/Traces/Gauss/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
+        direct = direc.format(nmbr = slice_num)
         if load == 0:
             trace1 = pm.sample(1000, random_seed = 123)
             try:
@@ -145,7 +141,7 @@ def optimize_pull(planet1):
     plt.savefig('{}plots/{}_joint_trace_optimize.pdf'.format(planet1, planet1), overwrite = True)
     plt.close('all')
 
-def optimize_pull1(planet):
+def median_pull(planet):
     plt.close('all')
     if planet == 'Kep1520':
         j = 33
