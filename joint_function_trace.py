@@ -52,14 +52,18 @@ def joint_trace(planet, load = 0):
             
             ## These will come from out-of-transit posterior
             ## This encapsulates the photon, erorr and stellar noises
-            mu_gauss = pm.Normal('mu_gauss', mu=1.00007,sigma=0.00001, testval = flux.mean(axis=0))#mean(trace(mu)), np.std(trace(mu))
+            #mu_gauss = pm.Normal('mu_gauss', mu=1.00007,sigma=0.00001, testval = flux.mean(axis=0))#mean(trace(mu)), np.std(trace(mu))
             sigma_gauss = pm.Normal('sigma_gauss', mu=0.0007,sigma=0.0001, testval = 0.00069)#mean(trace(sigma)), np.std(trace(sigma))
             
             gauss = pm.Normal('model_gauss', mu=mu_gauss,sigma=sigma_gauss)
 
             #flux_maximum = pm.Normal('flux_maximum', mu=1.0,sigma=0.01)
+            '''
             mu_r = pm.Normal('mu_r', mu=1.0,sigma=0.01, testval = 1)
             sigma_r = pm.Normal('sigma_r', mu=0.01,sigma=0.01)
+            '''
+            mu_r = pm.Normal('mu_r', mu = 1.0, sigma = 0.05, testval = 1)
+            sigma_r = pm.Normal('sigma_r', mu = 0.003, sigma = 0.01)
             
             y_obs = joint_function('joint_function',sigma_r=sigma_r,sigma_g=sigma_gauss,mu_r=mu_r,observed=flux)
             

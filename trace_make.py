@@ -104,20 +104,22 @@ def optimize_pull(planet1):
     plt.close('all')
     if planet1 == 'Kep1520':
         j = 33
-        x = np.linspace(0.985, 1.005, 1000)
+        x = np.linspace(0.97, 1.005, 1000)
     if planet1 == 'K2d22':
         j = 19
-        x = np.linspace(0.985, 1.01, 1000)
+        x = np.linspace(0.97, 1.01, 1000)
     i = 1
     while i < j:
             map_params = joint_function_trace.single_slice(planet = planet1, slice_num = i, load = 2)
             mu_r = map_params["mu_r"]
             sigma_r = map_params["sigma_r"]
             sigma_g = map_params["sigma_gauss"]
-            mu_g = map_params["mu_gauss"]
+            #Update this with out of transit trace value after checking
+            mu_g_only = 1.00007
+            print(mu_r, sigma_r, mu_g_only, sigma_g)
             y_j_tens = probability_funcs.joint_func(x, sigma_r = sigma_r, mu = mu_r, sigma_g = sigma_g)
             y_r = probability_funcs.raleigh(x, sigma = sigma_r, mu = mu_r)
-            y_g = probability_funcs.gaussian(x, sigma = sigma_g, mu = mu_g)
+            y_g = probability_funcs.gaussian(x, sigma = sigma_g, mu = mu_g_only)
             y_j = y_j_tens.eval()
             #y_r = y_r_tens.eval()
             yjmin, yjmax = min(y_j), max(y_j)
@@ -129,13 +131,13 @@ def optimize_pull(planet1):
             ygmin, ygmax = min(y_g), max(y_g)
             for k, val in enumerate(y_g):
                 y_g[k] = (val-ygmin) / (ygmax-ygmin)
-            plt.plot((y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'r-')
-            plt.plot(-(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'r-')
-            plt.fill_betweenx(x,(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)),-(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), alpha = 0.5, color = 'red')
+            #plt.plot((y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'r-')
+            #plt.plot(-(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'r-')
             plt.plot((y_r/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'b-')
             plt.plot(-(y_r/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'b-')
             plt.plot((y_g/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'g-')
             plt.plot(-(y_g/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'g-')
+            plt.fill_betweenx(x,(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)),-(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), alpha = 0.4, color = 'red')
             i +=1
     plt.xlabel('Phase, Counts')
     plt.ylabel('Flux')
