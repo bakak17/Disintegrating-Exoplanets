@@ -4,6 +4,8 @@ import pymc3 as pm
 from astropy.io import fits
 import probability_funcs
 import pdb
+import joint_function_trace
+import trace_make
 
 class joint_function(pm.Continuous):
     def __init__(self,sigma_r=1,sigma_g=1,mu_r=0.0,*args,**kwargs):
@@ -27,6 +29,7 @@ class joint_function(pm.Continuous):
                                         mu=self.mu_r, sigma_g = self.sigma_g)
         return np.log(p)
 
+
 def single_slice(planet, slice_num):
     flnm = 'FluxFiles/{plnt}_slice{{nmbr}}.fits'.format(plnt = planet)
     filename= flnm.format(nmbr = slice_num)
@@ -43,7 +46,7 @@ def single_slice(planet, slice_num):
 
         #flux_maximum = pm.Normal('flux_maximum', mu=1.0,sigma=0.01)
         mu_r = pm.Normal('mu_r', mu=1.0,sigma=0.01, testval = 1)
-        sigma_r = pm.Normal('sigma_r', mu=0.01,sigma=0.01)
+        sigma_r = pm.TruncatedNormal('sigma_r', mu = 0.01, sigma = 0.005,lower=0.0)
         
         y_obs = joint_function('joint_function',sigma_r=sigma_r,sigma_g=sigma_gauss,mu_r=mu_r,observed=flux)
         
@@ -52,6 +55,7 @@ def single_slice(planet, slice_num):
         direct = direc.format(nmbr = slice_num)
         trace1 = pm.load_trace(directory = direct)
         return trace1
+
 
 def chunk_violin(planet):
     if planet == 'Kep1520':
@@ -65,7 +69,7 @@ def chunk_violin(planet):
     Time = HDUList[3].data
     dat = []
     while i < j:
-        trace1 = single_slice(planet = planet, slice_num = i)
+        trace1 = joint_function_trace.single_slice(planet = planet, slice_num = i, load = 1)
         dat.append(trace1['mu_r'])
         i += 1
     plt.violinplot(dat, Time, widths = 1/(j), showmeans = True, showextrema = False,
@@ -104,7 +108,7 @@ def slice_violin(planet):
     Time = HDUList[3].data
     while i < j:
         dat = []
-        trace1 = single_slice(planet = planet, slice_num = i)
+        trace1 = joint_function_trace.single_slice(planet = planet, slice_num = i, load = 1)
         dat.append(trace1['mu_r'])
         flnm = 'FluxFiles/{plnt}_slice{{nmbr}}.fits'.format(plnt = planet)
         filename = flnm.format(nmbr = i)
@@ -127,7 +131,7 @@ def median_pull(planet):
         j = 19
         x = np.linspace(0.985, 1.01, 1000)
     i = 1
-    trace2 = single_slice(planet = planet, slice_num = 'FullOut')
+    trace2 = trace_make.single_slice(planet = planet, slice_num = 'FullOut', load = 1)
     dat_mug = []
     dat_sigg = []
     dat_mug.append(trace2['mu_gauss'])
@@ -137,11 +141,12 @@ def median_pull(planet):
     while i < j:
         dat_mur = []
         dat_sigr = []
-        trace1 = single_slice(planet = planet, slice_num = i)
+        trace1 = joint_function_trace.single_slice(planet = planet, slice_num = i, load = 1)
         dat_mur.append(trace1['mu_r'])
         dat_sigr.append(trace1['sigma_r'])
         mu_r = np.median(dat_mur)
         sigma_r = np.median(dat_sigr)
+        print(sigma_r, mu_r, sigma_g)
         y_j_tens = probability_funcs.joint_func(x, sigma_r = sigma_r, mu = mu_r, sigma_g = sigma_g)
         y_r = probability_funcs.raleigh(x, sigma = sigma_r, mu = mu_r)
         y_g = probability_funcs.gaussian(x, sigma = sigma_g, mu = mu_g)
@@ -161,11 +166,11 @@ def median_pull(planet):
         plt.plot(-(y_r/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'b-')
         plt.plot((y_g/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'g-')
         plt.plot(-(y_g/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'g-')
-        plt.fill_betweenx(x,(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)),-(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), alpha = 0.4, color = 'red')
+        plt.fill_betweenx(x,(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)),-(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), alpha = 0.7, color = 'red')
         i +=1
     plt.xlabel('Phase, Counts')
     plt.ylabel('Flux')
-    plt.title('Maximum A Priori Solution, Flux vs Orbital Phase')
+    plt.title('Median Posterior Solution, Flux vs Orbital Phase')
     plt.savefig('{}plots/{}_joint_trace_optimize.pdf'.format(planet, planet), overwrite = True)
     plt.close('all')
         

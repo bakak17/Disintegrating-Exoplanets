@@ -6,6 +6,8 @@ import probability_funcs
 import pdb
 import os
 import pymc3_ext as pmx
+import trace_make
+homedir = os.getcwd()
 plt.close('all')
 
 class joint_function(pm.Continuous):
@@ -47,30 +49,33 @@ def joint_trace(planet, load = 0):
         HDUList = fits.open(filename)
         flux = HDUList[1].data
         error = HDUList[2].data
+        trace2 = trace_make.single_slice(planet, 'FullOut', load = 1)
+        dat_sigg = []
+        dat_sigg.append(trace2['sigma_g'])
+        sigma_g_mu = np.median(dat_sigg)
+        sigma_g_sig = np.std(dat_sigg)
+        print(sigma_g_mu, sigma_g_sig)
         
         with pm.Model() as model:
             
             ## These will come from out-of-transit posterior
             ## This encapsulates the photon, erorr and stellar noises
-            #mu_gauss = pm.Normal('mu_gauss', mu=1.00007,sigma=0.00001, testval = flux.mean(axis=0))#mean(trace(mu)), np.std(trace(mu))
-            sigma_gauss = pm.Normal('sigma_gauss', mu=0.0007,sigma=0.0001, testval = 0.00069)#mean(trace(sigma)), np.std(trace(sigma))
+            sigma_gauss = pm.Normal('sigma_gauss', mu=sigma_g_mu,sigma=sigma_g_sig, testval = 0.00069)#mean(trace(sigma)), np.std(trace(sigma))
             
-            gauss = pm.Normal('model_gauss', mu=mu_gauss,sigma=sigma_gauss)
-
-            #flux_maximum = pm.Normal('flux_maximum', mu=1.0,sigma=0.01)
             '''
             mu_r = pm.Normal('mu_r', mu=1.0,sigma=0.01, testval = 1)
             sigma_r = pm.Normal('sigma_r', mu=0.01,sigma=0.01)
             '''
             mu_r = pm.Normal('mu_r', mu = 1.0, sigma = 0.05, testval = 1)
-            sigma_r = pm.Normal('sigma_r', mu = 0.003, sigma = 0.01)
+            sigma_r = pm.TruncatedNormal('sigma_r', mu = 0.01, sigma = 0.005,lower=0.0)
             
             y_obs = joint_function('joint_function',sigma_r=sigma_r,sigma_g=sigma_gauss,mu_r=mu_r,observed=flux)
             
             #pdb.set_trace()
 
-            direc = '/Users/keithbaka/Documents/0Research_Schlawin/Traces/Joint/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
+            direc = homedir + '/Traces/Joint/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
             direct = direc.format(nmbr = i)
+            print(direct)
             if load == 0:
                 #trace1 = pm.sample(1000, random_seed = 123)
                 trace1 = pm.sample(init="adapt_diag")
@@ -95,14 +100,14 @@ def single_slice(planet, slice_num, load = 0):
     with pm.Model() as model:
         ## These will come from out-of-transit posterior
         ## This encapsulates the photon, erorr and stellar noises
-        mu_gauss = pm.Normal('mu_gauss', mu=1.00007,sigma=0.00001, testval = flux.mean(axis=0))#mean(trace(mu)), np.std(trace(mu))
+        #mu_gauss = pm.Normal('mu_gauss', mu=1.00007,sigma=0.00001, testval = flux.mean(axis=0))#mean(trace(mu)), np.std(trace(mu))
         sigma_gauss = pm.Normal('sigma_gauss', mu=0.0007,sigma=0.0001, testval = 0.00069)#mean(trace(sigma)), np.std(trace(sigma))
         
-        gauss = pm.Normal('model_gauss', mu=mu_gauss,sigma=sigma_gauss)
+        #gauss = pm.Normal('model_gauss', mu=mu_gauss,sigma=sigma_gauss)
 
         #flux_maximum = pm.Normal('flux_maximum', mu=1.0,sigma=0.01)
         mu_r = pm.Normal('mu_r', mu=1.0,sigma=0.01, testval = 1)
-        sigma_r = pm.Normal('sigma_r', mu=0.01,sigma=0.01)
+        sigma_r = pm.TruncatedNormal('sigma_r', mu = 0.01, sigma = 0.005,lower=0.0)
         
         y_obs = joint_function('joint_function',sigma_r=sigma_r,sigma_g=sigma_gauss,mu_r=mu_r,observed=flux)
         
