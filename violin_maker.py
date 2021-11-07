@@ -6,6 +6,7 @@ import probability_funcs
 import pdb
 import joint_function_trace
 import trace_make
+homedir = os.getcwd()
 
 class joint_function(pm.Continuous):
     def __init__(self,sigma_r=1,sigma_g=1,mu_r=0.0,*args,**kwargs):
@@ -51,7 +52,7 @@ def single_slice(planet, slice_num):
         y_obs = joint_function('joint_function',sigma_r=sigma_r,sigma_g=sigma_gauss,mu_r=mu_r,observed=flux)
         
         #pdb.set_trace()
-        direc = '/Users/keithbaka/Documents/0Research_Schlawin/Traces/Joint/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
+        direc = homedir + '/Traces/Joint/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
         direct = direc.format(nmbr = slice_num)
         trace1 = pm.load_trace(directory = direct)
         return trace1
@@ -134,8 +135,8 @@ def median_pull(planet):
     trace2 = trace_make.single_slice(planet = planet, slice_num = 'FullOut', load = 1)
     dat_mug = []
     dat_sigg = []
-    dat_mug.append(trace2['mu_gauss'])
-    dat_sigg.append(trace2['sigma_gauss'])
+    dat_mug.append(trace2['mu_g'])
+    dat_sigg.append(trace2['sigma_g'])
     mu_g = np.median(dat_mug)
     sigma_g = np.median(dat_sigg)
     while i < j:

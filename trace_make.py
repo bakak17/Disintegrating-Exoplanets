@@ -8,6 +8,7 @@ import os
 import probability_funcs
 from sklearn import preprocessing
 import joint_function_trace
+homedir = os.getcwd()
 plt.close('all')
 
 
@@ -34,7 +35,7 @@ def rapido(planet):
             #map_params = pmx.optimize()
             trace1 = pm.sample(1000, random_seed = 123)
         
-            direc = '/Users/keithbaka/Documents/0Research_Schlawin/Traces/Gauss/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
+            direc = homedir + 'Traces/Gauss/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
             direct = direc.format(nmbr = i)
             try:
                 pm.save_trace(trace1, directory = direct, overwrite = True)
@@ -51,13 +52,13 @@ def single_slice(planet, slice_num, load = 0):
     error = HDUList[2].data
     with pm.Model() as slice_model:
 
-        sigma_g = pm.Normal('sigma_g', 0.00065, 0.0026)
+        sigma_g = pm.Normal('sigma_g', 0.00065, 0.026)
         if slice_num == 'FullOut':
             mu_g = pm.Normal('mu_g', 1, 0.065)
         else:
             mu_g = pm.Normal('mu_g', 1, 0.00065)
         slice_mdl = pm.Normal('model', sigma = sigma_g, mu = mu_g, observed = flux)
-        direc = '/Users/keithbaka/Documents/0Research_Schlawin/Traces/Gauss/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
+        direc = homedir + '/Traces/Gauss/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
         direct = direc.format(nmbr = slice_num)
         if load == 0:
             trace1 = pm.sample(1000, random_seed = 123)

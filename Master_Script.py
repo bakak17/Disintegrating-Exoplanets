@@ -90,6 +90,7 @@ def script():
     trace_make.hist_maker('K2d22')
 
     '''JOINT_FUNCTION_TRACE'''
+    
     import joint_function_trace
 
     joint_function_trace.joint_trace('Kep1520')
@@ -99,13 +100,13 @@ def script():
     joint_function_trace.single_slice('K2d22', 'FullOut')
 
     '''PLOTTING'''
-
-    trace_make.optimize_pull('Kep1520')
-    trace_make.optimize_pull('K2d22')
-
+    
     import violin_maker
 
     violin_maker.chunk_violin('Kep1520')
     violin_maker.chunk_violin('K2d22')
+
+    violin_maker.median_pull('Kep1520')
+    violin_maker.median_pull('K2d22')
 
     
