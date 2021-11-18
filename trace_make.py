@@ -35,7 +35,7 @@ def rapido(planet):
             #map_params = pmx.optimize()
             trace1 = pm.sample(1000, random_seed = 123)
         
-            direc = homedir + 'Traces/Gauss/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
+            direc = homedir + '/Traces/Gauss/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
             direct = direc.format(nmbr = i)
             try:
                 pm.save_trace(trace1, directory = direct, overwrite = True)
