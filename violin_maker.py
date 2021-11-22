@@ -6,6 +6,7 @@ import probability_funcs
 import pdb
 import joint_function_trace
 import trace_make
+import os
 homedir = os.getcwd()
 
 class joint_function(pm.Continuous):
@@ -95,6 +96,7 @@ def chunk_violin(planet):
     plt.title('Distribution of Fluxes for Observed Transits for {}'.format(plan))
     plt.xlabel('Time (Phase)')
     plt.ylabel('Normalized Flux')
+    plt.ylim(0.988, 1.005)
     #plt.show()
     plt.savefig("{}plots/violin_plots/flux_violin.pdf".format(planet), overwrite = True)
     plt.close('all')
@@ -127,10 +129,10 @@ def median_pull(planet):
     plt.close('all')
     if planet == 'Kep1520':
         j = 33
-        x = np.linspace(0.985, 1.005, 1000)
+        x = np.linspace(0.988, 1.005, 1000)
     if planet == 'K2d22':
         j = 19
-        x = np.linspace(0.985, 1.01, 1000)
+        x = np.linspace(0.988, 1.005, 1000)
     i = 1
     trace2 = trace_make.single_slice(planet = planet, slice_num = 'FullOut', load = 1)
     dat_mug = []
@@ -163,14 +165,15 @@ def median_pull(planet):
                 y_g[k] = (val-ygmin) / (ygmax-ygmin)
         #plt.plot((y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'r-')
         #plt.plot(-(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'r-')
-        plt.plot((y_r/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'b-')
-        plt.plot(-(y_r/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'b-')
-        plt.plot((y_g/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'g-')
-        plt.plot(-(y_g/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'g-')
-        plt.fill_betweenx(x,(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)),-(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), alpha = 0.7, color = 'red')
+        plt.plot((y_r/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'b-')
+        plt.plot(-(y_r/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'b-')
+        plt.plot((y_g/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'g-')
+        plt.plot(-(y_g/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'g-')
+        plt.fill_betweenx(x,(y_j/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)),-(y_j/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), alpha = 0.7, color = 'red')
         i +=1
     plt.xlabel('Phase, Counts')
-    plt.ylabel('Flux')
+    plt.ylabel('Normalized Flux')
+    plt.ylim(0.988, 1.005)
     plt.title('Median Posterior Solution, Flux vs Orbital Phase')
     plt.savefig('{}plots/{}_joint_trace_optimize.pdf'.format(planet, planet), overwrite = True)
     plt.close('all')

@@ -114,7 +114,7 @@ def single_slice(planet, slice_num, load = 0):
         y_obs = joint_function('joint_function',sigma_r=sigma_r,sigma_g=sigma_gauss,mu_r=mu_r,observed=flux)
         
         #pdb.set_trace()
-        direc = homedir + 'Traces/Joint/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
+        direc = homedir + '/Traces/Joint/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
         direct = direc.format(nmbr = slice_num)
         if load == 0:
             #trace1 = pm.sample(1000, random_seed = 123)
