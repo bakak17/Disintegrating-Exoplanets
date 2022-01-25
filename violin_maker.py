@@ -127,7 +127,7 @@ def slice_violin(planet):
         plt.close('all')
         i += 1
 
-def median_pull(planet):
+def median_pull(planet, scale = 1):
     plt.close('all')
     if planet == 'Kep1520':
         dt = 0.03187669/(float(scale))
