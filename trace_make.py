@@ -12,6 +12,7 @@ homedir = os.getcwd()
 plt.close('all')
 
 
+
 def rapido(planet, scale = 1):
     t = -0.5
     if planet == 'Kep1520':
@@ -82,7 +83,7 @@ def hist_maker(planet, scale = 1):
     elif planet == 'K2d22':
         dt = 0.05466947/(float(scale))
     j = (int(1 / dt) + 1)
-    i = 1
+    i = 0
     while i < j:
         trace1 = single_slice(planet = planet, slice_num = i, load = 1)
         plt.hist(trace1['sigma'])
@@ -109,7 +110,7 @@ def optimize_pull(planet1, scale):
         dt = 0.05466947/(float(scale))
         x = np.linspace(0.97, 1.01, 1000)
     j = (int(1 / dt) + 1)
-    i = 1
+    i = 0
     while i < j:
             map_params = joint_function_trace.single_slice(planet = planet1, slice_num = i, load = 2)
             mu_r = map_params["mu_r"]

@@ -33,12 +33,12 @@ class joint_function(pm.Continuous):
         return np.log(p)
 
 
-def joint_trace(planet, load = 0):
+def joint_trace(planet, scale = 1, load = 0):
     t = -0.5
     if planet == 'Kep1520':
-        dt = 0.03187669
+        dt = 0.03187669/(float(scale))
     elif planet == 'K2d22':
-        dt = 0.05466947
+        dt = 0.05466947/(float(scale))
     nSlices = (int(1 / dt) + 1)
     i = 0
 
@@ -133,10 +133,11 @@ def single_slice(planet, slice_num, load = 0):
 
 def hist_maker(planet):
     if planet == 'Kep1520':
-        j = 33
-    if planet == 'K2d22':
-        j = 20
-    i = 1
+        dt = 0.03187669/(float(scale))
+    elif planet == 'K2d22':
+        dt = 0.05466947/(float(scale))
+    nSlices = (int(1 / dt) + 1)
+    i = 0
     while i < j:
         trace1 = single_slice(planet = planet, slice_num = i, load = 1)
         plt.xlim(0.998, 1.0025)

@@ -59,14 +59,15 @@ def single_slice(planet, slice_num):
         return trace1
 
 
-def chunk_violin(planet):
+def chunk_violin(planet, scale = 1):
     if planet == 'Kep1520':
-        j = 33
+        dt = 0.03187669/(float(scale))
         plan = 'Kepler 1520b'
     if planet == 'K2d22':
-        j = 20
+        dt = 0.05466947/(float(scale))
         plan = 'K2-22b'
-    i = 1
+    j = (int(1 / dt) + 1)
+    i = 0
     HDUList = fits.open("{}total_hist.fits".format(planet))
     Time = HDUList[3].data
     dat = []
@@ -82,7 +83,7 @@ def chunk_violin(planet):
     plt.savefig("{}plots/violin_plots/trace_violin.pdf".format(planet), overwrite = True)
     plt.close('all')
     dat = []
-    i = 1
+    i = 0
     while i<j:
         flnm = 'FluxFiles/{plnt}_slice{{nmbr}}.fits'.format(plnt = planet)
         filename = flnm.format(nmbr = i)
@@ -103,10 +104,11 @@ def chunk_violin(planet):
 
 def slice_violin(planet):
     if planet == 'Kep1520':
-        j = 33
+        dt = 0.03187669/(float(scale))
     if planet == 'K2d22':
-        j = 20
-    i = 1
+        dt = 0.05466947/(float(scale))
+    j = (int(1 / dt) + 1)
+    i = 0
     HDUList = fits.open("{}total_hist.fits".format(planet))
     Time = HDUList[3].data
     while i < j:
@@ -128,12 +130,13 @@ def slice_violin(planet):
 def median_pull(planet):
     plt.close('all')
     if planet == 'Kep1520':
-        j = 33
+        dt = 0.03187669/(float(scale))
         x = np.linspace(0.988, 1.005, 1000)
     if planet == 'K2d22':
-        j = 19
+        dt = 0.05466947/(float(scale))
         x = np.linspace(0.988, 1.005, 1000)
-    i = 1
+    j = (int(1 / dt) + 1)
+    i = 0
     trace2 = trace_make.single_slice(planet = planet, slice_num = 'FullOut', load = 1)
     dat_mug = []
     dat_sigg = []

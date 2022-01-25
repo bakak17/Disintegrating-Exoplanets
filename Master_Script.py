@@ -79,6 +79,9 @@ def script(scale = 1):
         print(error)
     
     import trace_make
+
+    ##May have to edit "i"s and "j"s so each is increased by one to keep notation
+    ##and filenames consistent
     
     trace_make.rapido(planet = 'Kep1520', scale = 1)
     trace_make.rapido(planet = 'K2d22', scale = 1)
@@ -93,8 +96,8 @@ def script(scale = 1):
     
     import joint_function_trace
 
-    joint_function_trace.joint_trace('Kep1520')
-    joint_function_trace.joint_trace('K2d22')
+    joint_function_trace.joint_trace('Kep1520', scale = 1)
+    joint_function_trace.joint_trace('K2d22', scale = 1)
 
     joint_function_trace.single_slice('Kep1520', 'FullOut')
     joint_function_trace.single_slice('K2d22', 'FullOut')
@@ -103,10 +106,10 @@ def script(scale = 1):
     
     import violin_maker
 
-    violin_maker.chunk_violin('Kep1520')
-    violin_maker.chunk_violin('K2d22')
+    violin_maker.chunk_violin('Kep1520', scale = 1)
+    violin_maker.chunk_violin('K2d22', scale = 1)
 
-    violin_maker.median_pull('Kep1520')
-    violin_maker.median_pull('K2d22')
+    violin_maker.median_pull('Kep1520', scale = 1)
+    violin_maker.median_pull('K2d22', scale = 1)
 
     
