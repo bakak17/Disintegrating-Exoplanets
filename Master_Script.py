@@ -12,7 +12,7 @@ import arviz as az
 import os
 plt.close('all')
 
-def script():
+def script(scale = 1):
     
     '''LIGHTCURVE_DOWNLOAD.PY'''
     
@@ -80,14 +80,14 @@ def script():
     
     import trace_make
     
-    trace_make.rapido(planet = 'Kep1520')
-    trace_make.rapido(planet = 'K2d22')
+    trace_make.rapido(planet = 'Kep1520', scale = 1)
+    trace_make.rapido(planet = 'K2d22', scale = 1)
     
     trace_make.single_slice(planet = 'Kep1520', slice_num = 'FullOut')
     trace_make.single_slice(planet = 'K2d22', slice_num = 'FullOut')
     
-    trace_make.hist_maker('Kep1520')
-    trace_make.hist_maker('K2d22')
+    trace_make.hist_maker('Kep1520', scale = 1)
+    trace_make.hist_maker('K2d22', scale = 1)
 
     '''JOINT_FUNCTION_TRACE'''
     

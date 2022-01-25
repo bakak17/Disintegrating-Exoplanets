@@ -12,12 +12,13 @@ homedir = os.getcwd()
 plt.close('all')
 
 
-def rapido(planet):
+def rapido(planet, scale = 1):
     t = -0.5
     if planet == 'Kep1520':
-        dt = 0.03187669
+        dt = 0.03187669/(float(scale))
+        #This may cause an error!! Causes j = 32 not j = 33
     elif planet == 'K2d22':
-        dt = 0.05466947
+        dt = 0.05466947/(float(scale))
     nSlices = (int(1 / dt) + 1)
     i = 0
 
@@ -74,11 +75,13 @@ def single_slice(planet, slice_num, load = 0):
             map_params = pmx.optimize()
             return map_params
 
-def hist_maker(planet):
+def hist_maker(planet, scale = 1):
     if planet == 'Kep1520':
-        j = 32
-    if planet == 'K2d22':
-        j = 19
+        dt = 0.03187669/(float(scale))
+        #This may cause an error!! Causes j = 32 not j = 33
+    elif planet == 'K2d22':
+        dt = 0.05466947/(float(scale))
+    j = (int(1 / dt) + 1)
     i = 1
     while i < j:
         trace1 = single_slice(planet = planet, slice_num = i, load = 1)
@@ -97,14 +100,15 @@ def hist_maker(planet):
     plt.savefig('{}plots/norm_trace/slice{}_mu.pdf'.format(planet, 'FullOut'))
     plt.close()
 
-def optimize_pull(planet1):
+def optimize_pull(planet1, scale):
     plt.close('all')
-    if planet1 == 'Kep1520':
-        j = 33
+    if planet == 'Kep1520':
+        dt = 0.03187669/(float(scale))
         x = np.linspace(0.97, 1.005, 1000)
     if planet1 == 'K2d22':
-        j = 19
+        dt = 0.05466947/(float(scale))
         x = np.linspace(0.97, 1.01, 1000)
+    j = (int(1 / dt) + 1)
     i = 1
     while i < j:
             map_params = joint_function_trace.single_slice(planet = planet1, slice_num = i, load = 2)
