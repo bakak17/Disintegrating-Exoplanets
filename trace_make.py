@@ -85,6 +85,7 @@ def hist_maker(planet, scale = 1):
     j = (int(1 / dt) + 1)
     i = 0
     while i < j:
+        i += 1
         trace1 = single_slice(planet = planet, slice_num = i, load = 1)
         plt.hist(trace1['sigma'])
         plt.savefig('{}plots/norm_trace/slice{:02d}_sigma.pdf'.format(planet, i))
@@ -92,7 +93,6 @@ def hist_maker(planet, scale = 1):
         plt.hist(trace1['mu'])
         plt.savefig('{}plots/norm_trace/slice{:02d}_mu.pdf'.format(planet, i))
         plt.close()
-        i += 1
     trace1 = single_slice(planet = planet, slice_num = 'FullOut', load = 1)
     plt.hist(trace1['sigma'])
     plt.savefig('{}plots/norm_trace/slice{}_sigma.pdf'.format(planet, 'FullOut'))
@@ -112,6 +112,7 @@ def optimize_pull(planet1, scale):
     j = (int(1 / dt) + 1)
     i = 0
     while i < j:
+            i += 1
             map_params = joint_function_trace.single_slice(planet = planet1, slice_num = i, load = 2)
             mu_r = map_params["mu_r"]
             sigma_r = map_params["sigma_r"]
@@ -140,7 +141,6 @@ def optimize_pull(planet1, scale):
             plt.plot((y_g/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'g-')
             plt.plot(-(y_g/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'g-')
             plt.fill_betweenx(x,(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)),-(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), alpha = 0.4, color = 'red')
-            i +=1
     plt.xlabel('Phase, Counts')
     plt.ylabel('Flux')
     plt.title('Maximum A Priori Solution, Flux vs Orbital Phase')
@@ -157,6 +157,7 @@ def median_pull(planet):
         x = np.linspace(0.985, 1.01, 1000)
     i = 1
     while i < (2*j/3):
+            i +=1
             map_params = single_slice(planet = planet, slice_num = i, load = 2)
             mu1 = map_params["mu"]
             sigma1 = map_params["sigma"]
@@ -168,5 +169,5 @@ def median_pull(planet):
             plt.plot(-(y/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'r-')
             plt.fill_betweenx(x,(y/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)),-(y/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), alpha = 0.5, color = 'red')
             print((2.2*(i-j/2))/(2.2*(j/2)))
-            i +=1
+            
     plt.savefig('{}plots/{}_gauss_trace_optimize.pdf'.format(planet, planet), overwrite = True)

@@ -41,8 +41,8 @@ def script(scale = 1):
     
     import Histogram_Compiler
     
-    Histogram_Compiler.compiler(planet = 'Kep1520')
-    Histogram_Compiler.compiler(planet = 'K2d22')
+    Histogram_Compiler.compiler(planet = 'Kep1520', scale = 1)
+    Histogram_Compiler.compiler(planet = 'K2d22', scale = 1)
     
     
     '''FLUXSAVER.PY'''
@@ -53,11 +53,11 @@ def script(scale = 1):
     
     import FluxSaver
     
-    FluxSaver.slice_flux(planet = 'Kep1520')
-    FluxSaver.slice_flux(planet = 'K2d22')
+    FluxSaver.slice_flux(planet = 'Kep1520', scale = 1)
+    FluxSaver.slice_flux(planet = 'K2d22', scale = 1)
     
-    FluxSaver.out_flux(planet = 'Kep1520')
-    FluxSaver.out_flux(planet = 'K2d22')
+    FluxSaver.out_flux(planet = 'Kep1520', scale = 1)
+    FluxSaver.out_flux(planet = 'K2d22', scale = 1)
     
     
     '''CURVE_FITTER.PY

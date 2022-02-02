@@ -6,7 +6,7 @@ def lightcurve_22():
     target = "K2-22"
     search_result = lk.search_lightcurve(target, mission='K2', campaign=1)
     collection = search_result.download()
-    print(collection)
+    #print(collection)
     #lc_stitch = collection.stitch()
     lc_norm = collection.normalize()
     lc_flat = lc_norm.flatten(window_length = 101)
@@ -21,7 +21,7 @@ def lightcurve_1520():
     target = "Kepler-1520"
     search_result = lk.search_lightcurve(target, mission='Kepler', exptime = 'long')#.download().PDCSAP_FLUX.normalize().flatten(window_length=101)
     collection = search_result.download_all()
-    print(collection)
+    #print(collection)
     lc_stitch = collection.stitch()
     lc_norm = lc_stitch.normalize()
     lc_flat = lc_norm.flatten(window_length = 101)
