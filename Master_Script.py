@@ -38,26 +38,29 @@ def script(scale = 1):
     
     
     '''HISTOGRAM_COMPILER.PY'''
+    ## HAVE TO CONVERT TIME TO PHASE FOR VARIABLE "pts"
     
     import Histogram_Compiler
     
-    Histogram_Compiler.compiler(planet = 'Kep1520', scale = 1)
-    Histogram_Compiler.compiler(planet = 'K2d22', scale = 1)
+    Histogram_Compiler.compiler(planet = 'Kep1520', scale = scale)
+    Histogram_Compiler.compiler(planet = 'K2d22', scale = scale)
     
     
     '''FLUXSAVER.PY'''
+    ## HAVE TO CONVERT TIME TO PHASE FOR VARIABLE "pts"
     try:
         os.mkdir('FluxFiles')
     except OSError as error:
         print(error)
     
     import FluxSaver
+    ##Regular dips in flux in folded.fits, cadence of Kepler, could alter results
     
-    FluxSaver.slice_flux(planet = 'Kep1520', scale = 1)
-    FluxSaver.slice_flux(planet = 'K2d22', scale = 1)
+    FluxSaver.slice_flux(planet = 'Kep1520', scale = scale)
+    FluxSaver.slice_flux(planet = 'K2d22', scale = scale)
     
-    FluxSaver.out_flux(planet = 'Kep1520', scale = 1)
-    FluxSaver.out_flux(planet = 'K2d22', scale = 1)
+    FluxSaver.out_flux(planet = 'Kep1520', scale = scale)
+    FluxSaver.out_flux(planet = 'K2d22', scale = scale)
     
     
     '''CURVE_FITTER.PY
@@ -83,21 +86,21 @@ def script(scale = 1):
     ##May have to edit "i"s and "j"s so each is increased by one to keep notation
     ##and filenames consistent
     
-    trace_make.rapido(planet = 'Kep1520', scale = 1)
-    trace_make.rapido(planet = 'K2d22', scale = 1)
+    trace_make.rapido(planet = 'Kep1520', scale = scale)
+    trace_make.rapido(planet = 'K2d22', scale = scale)
     
     trace_make.single_slice(planet = 'Kep1520', slice_num = 'FullOut')
     trace_make.single_slice(planet = 'K2d22', slice_num = 'FullOut')
     
-    trace_make.hist_maker('Kep1520', scale = 1)
-    trace_make.hist_maker('K2d22', scale = 1)
+    #trace_make.hist_maker('Kep1520', scale = scale)
+    #trace_make.hist_maker('K2d22', scale = scale)
 
     '''JOINT_FUNCTION_TRACE'''
     
     import joint_function_trace
 
-    joint_function_trace.joint_trace('Kep1520', scale = 1)
-    joint_function_trace.joint_trace('K2d22', scale = 1)
+    joint_function_trace.joint_trace('Kep1520', scale = scale)
+    joint_function_trace.joint_trace('K2d22', scale = scale)
 
     joint_function_trace.single_slice('Kep1520', 'FullOut')
     joint_function_trace.single_slice('K2d22', 'FullOut')
@@ -106,10 +109,12 @@ def script(scale = 1):
     
     import violin_maker
 
-    violin_maker.chunk_violin('Kep1520', scale = 1)
-    violin_maker.chunk_violin('K2d22', scale = 1)
+    ##Have to make an OS.Mkdir for violin_plots
 
-    violin_maker.median_pull('Kep1520', scale = 1)
-    violin_maker.median_pull('K2d22', scale = 1)
+    violin_maker.chunk_violin('Kep1520', scale = scale)
+    violin_maker.chunk_violin('K2d22', scale = scale)
+
+    violin_maker.median_pull('Kep1520', scale = scale)
+    violin_maker.median_pull('K2d22', scale = scale)
 
     

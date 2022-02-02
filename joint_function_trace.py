@@ -139,11 +139,12 @@ def hist_maker(planet):
     nSlices = (int(1 / dt) + 1)
     i = 0
     while i < j:
+        i += 1
         trace1 = single_slice(planet = planet, slice_num = i, load = 1)
         plt.xlim(0.998, 1.0025)
         plt.hist(trace1['mu_r'])
         plt.savefig('{}plots/mix_trace/slice{:02d}_muR.pdf'.format(planet, i))
         plt.close()
-        i += 1
+        
 
 

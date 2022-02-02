@@ -72,9 +72,9 @@ def chunk_violin(planet, scale = 1):
     Time = HDUList[3].data
     dat = []
     while i < j:
+        i += 1
         trace1 = joint_function_trace.single_slice(planet = planet, slice_num = i, load = 1)
         dat.append(trace1['mu_r'])
-        i += 1
     plt.violinplot(dat, Time, widths = 1/(j), showmeans = True, showextrema = False,
                    showmedians = True, bw_method='silverman')
     plt.title('Posterior Distributions of ' + r'$\mu_R$' + ' for {}'.format(plan))
@@ -85,12 +85,12 @@ def chunk_violin(planet, scale = 1):
     dat = []
     i = 0
     while i<j:
+        i += 1
         flnm = 'FluxFiles/{plnt}_slice{{nmbr}}.fits'.format(plnt = planet)
         filename = flnm.format(nmbr = i)
         HDUList = fits.open(filename)
         flux = HDUList[1].data
         dat.append(flux)
-        i += 1
         #pdb.set_trace()
     plt.violinplot(dat, Time, widths = 1/(j), showmeans = True, showextrema = False,
                    showmedians = True, bw_method='silverman')
@@ -112,6 +112,7 @@ def slice_violin(planet):
     HDUList = fits.open("{}total_hist.fits".format(planet))
     Time = HDUList[3].data
     while i < j:
+        i += 1
         dat = []
         trace1 = joint_function_trace.single_slice(planet = planet, slice_num = i, load = 1)
         dat.append(trace1['mu_r'])
@@ -125,7 +126,6 @@ def slice_violin(planet):
                        showextrema = True, showmedians = True, bw_method='silverman')
         plt.savefig(direc.format(nmbr = i), overwrite = True)
         plt.close('all')
-        i += 1
 
 def median_pull(planet, scale = 1):
     plt.close('all')
@@ -145,6 +145,7 @@ def median_pull(planet, scale = 1):
     mu_g = np.median(dat_mug)
     sigma_g = np.median(dat_sigg)
     while i < j:
+        i += 1
         dat_mur = []
         dat_sigr = []
         trace1 = joint_function_trace.single_slice(planet = planet, slice_num = i, load = 1)
@@ -173,7 +174,6 @@ def median_pull(planet, scale = 1):
         plt.plot((y_g/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'g-')
         plt.plot(-(y_g/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'g-')
         plt.fill_betweenx(x,(y_j/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)),-(y_j/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), alpha = 0.7, color = 'red')
-        i +=1
     plt.xlabel('Phase, Counts')
     plt.ylabel('Normalized Flux')
     plt.ylim(0.988, 1.005)

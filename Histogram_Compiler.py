@@ -4,10 +4,12 @@ from astropy.table import Table
 import matplotlib.pyplot as plt
 import numpy as np
 from astropy.io import fits
+import planet_params
 plt.close('all')
 
 ##VARIABLES. LOTS OF VARIABLES##
 def compiler(planet, binsize=0.0005, scale=1.0, shift=0):
+    period = planet_params.period(planet)
     t = -0.5
     if planet == 'Kep1520':
         dt = 0.03187669/(float(scale))
@@ -23,7 +25,7 @@ def compiler(planet, binsize=0.0005, scale=1.0, shift=0):
     nBin = bin_mid.shape[0]
     slide = shift/nBin
     slice_phase = np.arange(((t+0.5*dt)-slide), ((-t+0.5*dt) - slide), dt)
-    print(slice_phase)
+    #print(slice_phase)
     bigTable = np.zeros([nSlices, nBin])
     i = 0
     ##########
@@ -32,7 +34,6 @@ def compiler(planet, binsize=0.0005, scale=1.0, shift=0):
     
     while i < nSlices:
         pts = (phase > t) & (phase < (t + dt))
-        ##DIVIDE TIME BY PERIOD TO ALIGN WITH PHASE
         flux = dat['FLUX'][pts]
         counts, junk1, junk2 = plt.hist(flux, bins = bin_edges)
         bigTable[i,:] = counts

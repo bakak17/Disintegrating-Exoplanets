@@ -8,12 +8,14 @@ import os
 import probability_funcs
 from sklearn import preprocessing
 import joint_function_trace
+import pdb
 homedir = os.getcwd()
 plt.close('all')
 
 
 
 def rapido(planet, scale = 1):
+    
     t = -0.5
     if planet == 'Kep1520':
         dt = 0.03187669/(float(scale))
@@ -31,10 +33,11 @@ def rapido(planet, scale = 1):
         flux = HDUList[1].data
         error = HDUList[2].data
         with pm.Model() as slice_model:
-            sigma = pm.Normal('sigma', 0.00065, 0.0026)
+            sigma = pm.Normal('sigma', 0.00065, 0.00026)
             mu = pm.Normal('mu', 1, 0.00065)
             slice_mdl = pm.Normal('model', sigma = sigma, mu = mu, observed = flux)
             #map_params = pmx.optimize()
+            #pdb.set_trace()
             trace1 = pm.sample(1000, random_seed = 123)
         
             direc = homedir + '/Traces/Gauss/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
@@ -169,5 +172,4 @@ def median_pull(planet):
             plt.plot(-(y/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'r-')
             plt.fill_betweenx(x,(y/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)),-(y/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), alpha = 0.5, color = 'red')
             print((2.2*(i-j/2))/(2.2*(j/2)))
-            
     plt.savefig('{}plots/{}_gauss_trace_optimize.pdf'.format(planet, planet), overwrite = True)

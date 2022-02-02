@@ -2,6 +2,7 @@ from astropy.table import Table
 import matplotlib.pyplot as plt
 import numpy as np
 from astropy.io import fits
+import planet_params
 plt.close('all')
 
 def slice_flux(planet, binsize=0.0005, scale=1.0, shift=0):
@@ -9,9 +10,11 @@ def slice_flux(planet, binsize=0.0005, scale=1.0, shift=0):
     if planet == 'Kep1520':
         dt = 0.03187669/(float(scale))
         dat = Table.read("{}folded.fits".format(planet))
+        phase = dat['TIME'] / 0.653553800
     elif planet == 'K2d22':
         dt = 0.05466947/(float(scale))
         dat = Table.read("{}folded.fits".format(planet))
+        phase = dat['TIME'] / 0.381078
     nSlices = (int(1 / dt) + 1)
     bin_edges = np.arange(0.98, 1.05, binsize)
     bin_mid = np.arange((0.98 + (binsize*0.5)), (1.05), binsize)
@@ -22,7 +25,7 @@ def slice_flux(planet, binsize=0.0005, scale=1.0, shift=0):
     i = 0
 
     while i < nSlices:
-        pts = (dat['TIME'] > t) & (dat['TIME'] < (t + dt))
+        pts = (phase > t) & (phase < (t + dt))
         flux = dat['FLUX'][pts]
         error = dat['FLUX_ERR'][pts]
         i += 1
