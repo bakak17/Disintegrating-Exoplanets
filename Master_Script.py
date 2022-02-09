@@ -109,6 +109,15 @@ def script(scale = 1):
     
     import violin_maker
 
+    try:
+        os.mkdir('Kep1520plots/violin_plots')
+    except OSError as error:
+        print(error)
+    try:
+        os.mkdir('K2d22plots/violin_plots')
+    except OSError as error:
+        print(error)
+
     ##Have to make an OS.Mkdir for violin_plots
 
     violin_maker.chunk_violin('Kep1520', scale = scale)
