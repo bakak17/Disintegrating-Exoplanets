@@ -31,7 +31,7 @@ class joint_function(pm.Continuous):
                                         mu=self.mu_r, sigma_g = self.sigma_g)
         return np.log(p)
 
-
+'''
 def single_slice(planet, slice_num):
     flnm = 'FluxFiles/{plnt}_slice{{nmbr}}.fits'.format(plnt = planet)
     filename= flnm.format(nmbr = slice_num)
@@ -57,7 +57,7 @@ def single_slice(planet, slice_num):
         direct = direc.format(nmbr = slice_num)
         trace1 = pm.load_trace(directory = direct)
         return trace1
-
+'''
 
 def chunk_violin(planet, scale = 1):
     if planet == 'Kep1520':
@@ -68,27 +68,28 @@ def chunk_violin(planet, scale = 1):
         plan = 'K2-22b'
     j = (int(1 / dt) + 1)
     i = 0
-    HDUList = fits.open("{}total_hist.fits".format(planet))
+    flnm = "{plnt}total_hist_s{scale1}.fits".format(plnt = planet, scale1 = int(scale))
+    HDUList = fits.open(flnm)
     Time = HDUList[3].data
     dat = []
     while i < j:
         i += 1
-        trace1 = joint_function_trace.single_slice(planet = planet, slice_num = i, load = 1)
+        trace1 = joint_function_trace.single_slice(planet = planet, slice_num = i, load = 1, scale = scale)
         dat.append(trace1['mu_r'])
     plt.violinplot(dat, Time, widths = 1/(j), showmeans = True, showextrema = False,
                    showmedians = True, bw_method='silverman')
     plt.title('Posterior Distributions of ' + r'$\mu_R$' + ' for {}'.format(plan))
     plt.xlabel('Time (Phase)')
     plt.ylabel('Normalized Flux')
-    plt.savefig("{}plots/violin_plots/trace_violin.pdf".format(planet), overwrite = True)
+    flnm = "{plnt}plots/violin_plots/trace_violin_s{scale1}.pdf".format(plnt = planet, scale1 = int(scale))
+    plt.savefig(flnm, bbox_inches='tight', overwrite = True)
     plt.close('all')
     dat = []
     i = 0
     while i<j:
         i += 1
-        flnm = 'FluxFiles/{plnt}_slice{{nmbr}}.fits'.format(plnt = planet)
-        filename = flnm.format(nmbr = i)
-        HDUList = fits.open(filename)
+        flnm = 'FluxFiles/{plnt}_slice{nmbr}_s{scale1}.fits'.format(plnt = planet, nmbr = i, scale1 = int(scale))
+        HDUList = fits.open(flnm)
         flux = HDUList[1].data
         dat.append(flux)
         #pdb.set_trace()
@@ -99,7 +100,8 @@ def chunk_violin(planet, scale = 1):
     plt.ylabel('Normalized Flux')
     plt.ylim(0.988, 1.005)
     #plt.show()
-    plt.savefig("{}plots/violin_plots/flux_violin.pdf".format(planet), overwrite = True)
+    flnm = "{plnt}plots/violin_plots/flux_violin_s{scale1}.pdf".format(plnt = planet, scale1 = int(scale))
+    plt.savefig(flnm, bbox_inches='tight', overwrite = True)
     plt.close('all')
 
 def slice_violin(planet):
@@ -114,7 +116,7 @@ def slice_violin(planet):
     while i < j:
         i += 1
         dat = []
-        trace1 = joint_function_trace.single_slice(planet = planet, slice_num = i, load = 1)
+        trace1 = joint_function_trace.single_slice(planet = planet, slice_num = i, load = 1, scale = scale)
         dat.append(trace1['mu_r'])
         flnm = 'FluxFiles/{plnt}_slice{{nmbr}}.fits'.format(plnt = planet)
         filename = flnm.format(nmbr = i)
@@ -124,7 +126,7 @@ def slice_violin(planet):
         direc = "{plnt}plots/violin_plots/slice{{nmbr}}_violin.pdf".format(plnt = planet)
         plt.violinplot(dat, positions = (Time[i-1], Time[i-1]), showmeans = True,
                        showextrema = True, showmedians = True, bw_method='silverman')
-        plt.savefig(direc.format(nmbr = i), overwrite = True)
+        plt.savefig(direc.format(nmbr = i), bbox_inches='tight',overwrite = True)
         plt.close('all')
 
 def median_pull(planet, scale = 1):
@@ -137,7 +139,7 @@ def median_pull(planet, scale = 1):
         x = np.linspace(0.988, 1.005, 1000)
     j = (int(1 / dt) + 1)
     i = 0
-    trace2 = trace_make.single_slice(planet = planet, slice_num = 'FullOut', load = 1)
+    trace2 = trace_make.single_slice(planet = planet, slice_num = 'FullOut', load = 1, scale = scale)
     dat_mug = []
     dat_sigg = []
     dat_mug.append(trace2['mu_g'])
@@ -148,7 +150,7 @@ def median_pull(planet, scale = 1):
         i += 1
         dat_mur = []
         dat_sigr = []
-        trace1 = joint_function_trace.single_slice(planet = planet, slice_num = i, load = 1)
+        trace1 = joint_function_trace.single_slice(planet = planet, slice_num = i, load = 1, scale = scale)
         dat_mur.append(trace1['mu_r'])
         dat_sigr.append(trace1['sigma_r'])
         mu_r = np.median(dat_mur)
@@ -169,16 +171,17 @@ def median_pull(planet, scale = 1):
                 y_g[k] = (val-ygmin) / (ygmax-ygmin)
         #plt.plot((y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'r-')
         #plt.plot(-(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'r-')
-        plt.plot((y_r/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'b-')
-        plt.plot(-(y_r/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'b-')
-        plt.plot((y_g/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'g-')
-        plt.plot(-(y_g/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'g-')
+        plt.plot((y_r/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'b-', linewidth = 0.5)
+        plt.plot(-(y_r/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'b-', linewidth = 0.5)
+        plt.plot((y_g/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'g-', linewidth = 0.5)
+        plt.plot(-(y_g/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'g-', linewidth = 0.5)
         plt.fill_betweenx(x,(y_j/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)),-(y_j/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), alpha = 0.7, color = 'red')
     plt.xlabel('Phase, Counts')
     plt.ylabel('Normalized Flux')
     plt.ylim(0.988, 1.005)
     plt.title('Median Posterior Solution, Flux vs Orbital Phase')
-    plt.savefig('{}plots/{}_joint_trace_optimize.pdf'.format(planet, planet), overwrite = True)
+    flnm = '{plnt1}plots/{plnt2}_joint_trace_optimize_s{scale1}.pdf'.format(plnt1 = planet, plnt2 = planet, scale1 = int(scale))
+    plt.savefig(flnm, bbox_inches='tight', overwrite = True)
     plt.close('all')
         
     

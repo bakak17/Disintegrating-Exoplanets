@@ -23,7 +23,10 @@ def compiler(planet, binsize=0.0005, scale=1.0, shift=0):
     bin_edges = np.arange(0.98, 1.05, binsize)
     bin_mid = np.arange((0.98 + (binsize*0.5)), (1.05), binsize)
     nBin = bin_mid.shape[0]
-    slide = shift/nBin
+    if int(shift) != int(0):
+        slide = dt/shift
+    else:
+        slide = shift
     slice_phase = np.arange(((t+0.5*dt)-slide), ((-t+0.5*dt) - slide), dt)
     #print(slice_phase)
     bigTable = np.zeros([nSlices, nBin])
@@ -53,5 +56,7 @@ def compiler(planet, binsize=0.0005, scale=1.0, shift=0):
     phaseHDU = fits.ImageHDU(slice_phase)
     phaseHDU.name = 'TIME'
     HDUList = fits.HDUList([primHDU,bin_midHDU,sliceHDU,phaseHDU])
-    HDUList.writeto("{}total_hist.fits".format(planet),overwrite=True)
+    flnm = "{}total_hist_s{{scle}}.fits".format(planet)
+    filename = flnm.format(scle = int(scale))
+    HDUList.writeto(filename ,overwrite=True)
     plt.close('all')

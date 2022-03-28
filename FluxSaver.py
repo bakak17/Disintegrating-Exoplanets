@@ -19,7 +19,10 @@ def slice_flux(planet, binsize=0.0005, scale=1.0, shift=0):
     bin_edges = np.arange(0.98, 1.05, binsize)
     bin_mid = np.arange((0.98 + (binsize*0.5)), (1.05), binsize)
     nBin = bin_mid.shape[0]
-    slide = shift/nBin
+    if int(shift) != int(0):
+        slide = dt/shift
+    else:
+        slide = shift
     slice_phase = np.arange(((t+0.5*dt)-slide), ((-t+0.5*dt) - slide), dt)
     bigTable = np.zeros([nSlices, nBin])
     i = 0
@@ -39,10 +42,9 @@ def slice_flux(planet, binsize=0.0005, scale=1.0, shift=0):
         ErrorHDU = fits.ImageHDU(error)
         ErrorHDU.name = 'Error'
         HDUList = fits.HDUList([empty_primary, FluxHDU, ErrorHDU])
-        flnm = 'FluxFiles/{plnt}_slice{{nmbr}}.fits'.format(plnt = planet)
-        filename= flnm.format(nmbr = i)
-        HDUList.writeto(filename, overwrite = True)
-
+        flnm = 'FluxFiles/{plnt}_slice{nmbr}_s{scale1}.fits'.format(plnt = planet, nmbr = i, scale1 = int(scale))
+        HDUList.writeto(flnm, overwrite = True)
+        
 def out_flux(planet, binsize=0.0005, scale=1.0, shift=0):
     t = -0.5
     if planet == 'Kep1520':
@@ -55,7 +57,10 @@ def out_flux(planet, binsize=0.0005, scale=1.0, shift=0):
     bin_edges = np.arange(0.98, 1.05, binsize)
     bin_mid = np.arange((0.98 + (binsize*0.5)), (1.05), binsize)
     nBin = bin_mid.shape[0]
-    slide = shift/nBin
+    if int(shift) != int(0):
+        slide = dt/shift
+    else:
+        slide = shift
     slice_phase = np.arange(((t+0.5*dt)-slide), ((-t+0.5*dt) - slide), dt)
     bigTable = np.zeros([nSlices, nBin])
     i = 0
@@ -88,5 +93,5 @@ def out_flux(planet, binsize=0.0005, scale=1.0, shift=0):
     ErrorHDU = fits.ImageHDU(error)
     ErrorHDU.name = 'Error'
     HDUList = fits.HDUList([empty_primary, FluxHDU, ErrorHDU])
-    filename = 'FluxFiles/{}_sliceFullOut.fits'.format(planet)
-    HDUList.writeto(filename, overwrite = True)
+    flnm = 'FluxFiles/{plnt}_sliceFullOut_s{scale1}.fits'.format(plnt = planet, scale1 = int(scale))
+    HDUList.writeto(flnm, overwrite = True)

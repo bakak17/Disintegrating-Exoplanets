@@ -44,9 +44,8 @@ def joint_trace(planet, scale = 1, load = 0):
 
     while i < nSlices:
         i += 1
-        flnm = 'FluxFiles/{plnt}_slice{{nmbr}}.fits'.format(plnt = planet)
-        filename= flnm.format(nmbr = i)
-        HDUList = fits.open(filename)
+        flnm = 'FluxFiles/{plnt}_slice{nmbr}_s{scale1}.fits'.format(plnt = planet, nmbr = i, scale1 = int(scale))
+        HDUList = fits.open(flnm)
         flux = HDUList[1].data
         error = HDUList[2].data
         trace2 = trace_make.single_slice(planet, 'FullOut', load = 1)
@@ -72,8 +71,9 @@ def joint_trace(planet, scale = 1, load = 0):
             
             #pdb.set_trace()
 
-            direc = homedir + '/Traces/Joint/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
-            direct = direc.format(nmbr = i)
+            direc = homedir + '/Traces/Joint/{plnt}/Slice{nmbr}_s{scale1}'.format(plnt = planet, nmbr = i, scale1 = int(scale))
+            dirct = direc.format(nmbr = i)
+            direct = dirct.format(scale1 = int(scale))
             print(direct)
             if load == 0:
                 #trace1 = pm.sample(1000, random_seed = 123)
@@ -90,13 +90,12 @@ def joint_trace(planet, scale = 1, load = 0):
                 map_params = pmx.optimize()
                 return map_params
 
-def single_slice(planet, slice_num, load = 0):
-    flnm = 'FluxFiles/{plnt}_slice{{nmbr}}.fits'.format(plnt = planet)
-    filename= flnm.format(nmbr = slice_num)
-    HDUList = fits.open(filename)
+def single_slice(planet, slice_num, load = 0, scale = 1):
+    flnm = 'FluxFiles/{plnt}_slice{nmbr}_s{scale1}.fits'.format(plnt = planet, nmbr = slice_num, scale1 = int(scale))
+    HDUList = fits.open(flnm)
     flux = HDUList[1].data
     error = HDUList[2].data
-    trace2 = trace_make.single_slice(planet, 'FullOut', load = 1)
+    trace2 = trace_make.single_slice(planet, 'FullOut', load = 1, scale = scale)
     dat_sigg = []
     dat_sigg.append(trace2['sigma_g'])
     sigma_g_mu = np.median(dat_sigg)
@@ -114,8 +113,7 @@ def single_slice(planet, slice_num, load = 0):
         y_obs = joint_function('joint_function',sigma_r=sigma_r,sigma_g=sigma_gauss,mu_r=mu_r,observed=flux)
         
         #pdb.set_trace()
-        direc = homedir + '/Traces/Joint/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
-        direct = direc.format(nmbr = slice_num)
+        direct = homedir + '/Traces/Joint/{plnt}/Slice{nmbr}_s{scale1}'.format(plnt = planet, nmbr = slice_num, scale1 = int(scale))
         if load == 0:
             #trace1 = pm.sample(1000, random_seed = 123)
             trace1 = pm.sample(init="adapt_diag")

@@ -27,9 +27,8 @@ def rapido(planet, scale = 1):
 
     while i < nSlices:
         i += 1
-        flnm = 'FluxFiles/{plnt}_slice{{nmbr}}.fits'.format(plnt = planet)
-        filename= flnm.format(nmbr = i)
-        HDUList = fits.open(filename)
+        flnm = 'FluxFiles/{plnt}_slice{nmbr}_s{scale1}.fits'.format(plnt = planet, nmbr = i, scale1 = int(scale))
+        HDUList = fits.open(flnm)
         flux = HDUList[1].data
         error = HDUList[2].data
         with pm.Model() as slice_model:
@@ -40,8 +39,7 @@ def rapido(planet, scale = 1):
             #pdb.set_trace()
             trace1 = pm.sample(1000, random_seed = 123)
         
-            direc = homedir + '/Traces/Gauss/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
-            direct = direc.format(nmbr = i)
+            direct = homedir + '/Traces/Gauss/{plnt}/Slice{nmbr}_s{scale1}'.format(plnt = planet, nmbr = i, scale1 = int(scale))
             try:
                 pm.save_trace(trace1, directory = direct, overwrite = True)
             except IOError:
@@ -49,10 +47,9 @@ def rapido(planet, scale = 1):
             pm.save_trace(trace1, directory = direct, overwrite = True)
             #return map_params
 
-def single_slice(planet, slice_num, load = 0):
-    flnm = 'FluxFiles/{plnt}_slice{{nmbr}}.fits'.format(plnt = planet)
-    filename= flnm.format(nmbr = slice_num)
-    HDUList = fits.open(filename)
+def single_slice(planet, slice_num, load = 0, scale = 1):
+    flnm = 'FluxFiles/{plnt}_slice{nmbr}_s{scale1}.fits'.format(plnt = planet, nmbr = slice_num, scale1 = int(scale))
+    HDUList = fits.open(flnm)
     flux = HDUList[1].data
     error = HDUList[2].data
     with pm.Model() as slice_model:
@@ -63,8 +60,7 @@ def single_slice(planet, slice_num, load = 0):
         else:
             mu_g = pm.Normal('mu_g', 1, 0.00065)
         slice_mdl = pm.Normal('model', sigma = sigma_g, mu = mu_g, observed = flux)
-        direc = homedir + '/Traces/Gauss/{plnt}/Slice{{nmbr}}'.format(plnt = planet)
-        direct = direc.format(nmbr = slice_num)
+        direct = homedir + '/Traces/Gauss/{plnt}/Slice{nmbr}_s{scale1}'.format(plnt = planet, nmbr = slice_num, scale1 = int(scale))
         if load == 0:
             trace1 = pm.sample(1000, random_seed = 123)
             try:
@@ -78,7 +74,7 @@ def single_slice(planet, slice_num, load = 0):
         elif load == 2:
             map_params = pmx.optimize()
             return map_params
-
+'''
 def hist_maker(planet, scale = 1):
     if planet == 'Kep1520':
         dt = 0.03187669/(float(scale))
@@ -173,3 +169,4 @@ def median_pull(planet):
             plt.fill_betweenx(x,(y/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)),-(y/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), alpha = 0.5, color = 'red')
             print((2.2*(i-j/2))/(2.2*(j/2)))
     plt.savefig('{}plots/{}_gauss_trace_optimize.pdf'.format(planet, planet), overwrite = True)
+'''
