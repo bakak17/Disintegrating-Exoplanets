@@ -173,8 +173,12 @@ def median_pull(planet, scale = 1):
         #plt.plot(-(y_j/(2.2*(j/2)))+(2.2*(i-j/2))/(2.2*(j/2)), x, 'r-')
         plt.plot((y_r/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'b-', linewidth = 0.5)
         plt.plot(-(y_r/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'b-', linewidth = 0.5)
-        plt.plot((y_g/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'g-', linewidth = 0.5)
-        plt.plot(-(y_g/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'g-', linewidth = 0.5)
+        if planet == 'K2d22':
+            plt.plot((y_g/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x + 0.001, 'g-', linewidth = 0.5)
+            plt.plot(-(y_g/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x + 0.001, 'g-', linewidth = 0.5)
+        else:
+            plt.plot((y_g/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'g-', linewidth = 0.5)
+            plt.plot(-(y_g/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), x, 'g-', linewidth = 0.5)
         plt.fill_betweenx(x,(y_j/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)),-(y_j/(4.4*(j/2)))+(2.2*(i-j/2))/(4.4*(j/2)), alpha = 0.7, color = 'red')
     plt.xlabel('Phase, Counts')
     plt.ylabel('Normalized Flux')

@@ -94,7 +94,7 @@ def script(scale = 1, shift = 0):
     #trace_make.hist_maker('Kep1520', scale = scale)
     #trace_make.hist_maker('K2d22', scale = scale)
 
-    '''JOINT_FUNCTION_TRACE'''
+    '''JOINT_FUNCTION_TRACE.PY'''
     
     import joint_function_trace
 
@@ -103,6 +103,8 @@ def script(scale = 1, shift = 0):
 
     joint_function_trace.single_slice('Kep1520', 'FullOut', scale = scale)
     joint_function_trace.single_slice('K2d22', 'FullOut', scale = scale)
+
+    #gamma_function_trace.gamma_trace('Kep1520', scale = scale)
 
     '''PLOTTING'''
     
@@ -116,8 +118,6 @@ def script(scale = 1, shift = 0):
         os.mkdir('K2d22plots/violin_plots')
     except OSError as error:
         print(error)
-
-    ##Have to make an OS.Mkdir for violin_plots
 
     violin_maker.chunk_violin('Kep1520', scale = scale)
     violin_maker.chunk_violin('K2d22', scale = scale)

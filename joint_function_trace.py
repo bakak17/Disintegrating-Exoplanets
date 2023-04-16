@@ -71,9 +71,7 @@ def joint_trace(planet, scale = 1, load = 0):
             
             #pdb.set_trace()
 
-            direc = homedir + '/Traces/Joint/{plnt}/Slice{nmbr}_s{scale1}'.format(plnt = planet, nmbr = i, scale1 = int(scale))
-            dirct = direc.format(nmbr = i)
-            direct = dirct.format(scale1 = int(scale))
+            direct = homedir + '/Traces/Joint/{plnt}/Slice{nmbr}_s{scale1}'.format(plnt = planet, nmbr = i, scale1 = int(scale))
             print(direct)
             if load == 0:
                 #trace1 = pm.sample(1000, random_seed = 123)
